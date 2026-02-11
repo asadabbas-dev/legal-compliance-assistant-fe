@@ -1,1 +1,0 @@
-export { ProductMockup } from "./ProductMockup";

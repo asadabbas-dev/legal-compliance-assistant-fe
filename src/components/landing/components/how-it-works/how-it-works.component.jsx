@@ -2,33 +2,39 @@
 
 import { motion } from "framer-motion";
 import { Upload, MessageCircle, BookmarkCheck } from "lucide-react";
-import { StraightInclinedDivider } from "./SectionDivider";
-import { TiltCard } from "./TiltCard";
+import { StraightInclinedDivider } from "@/components/landing/components/section-divider/section-divider.component";
+import TiltCard from "@/components/landing/components/tilt-card/tilt-card.component";
 
 const STEPS = [
   {
     step: 1,
     title: "Upload documents",
-    description: "Add your PDF policies, contracts, and internal knowledge base. No setup required.",
+    description:
+      "Add your PDF policies, contracts, and internal knowledge base. No setup required.",
     icon: Upload,
   },
   {
     step: 2,
     title: "Ask questions",
-    description: "Plain language. No training required. Instant search across all documents.",
+    description:
+      "Plain language. No training required. Instant search across all documents.",
     icon: MessageCircle,
   },
   {
     step: 3,
     title: "Get cited answers",
-    description: "Every answer includes page-level source references for verification.",
+    description:
+      "Every answer includes page-level source references for verification.",
     icon: BookmarkCheck,
   },
 ];
 
-export function MarketingHowItWorks() {
+export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative overflow-visible bg-gradient-to-br from-black via-[#ffe58f] to-black pb-14 pt-10 sm:pb-14 sm:pt-14">
+    <section
+      id="how-it-works"
+      className="relative overflow-visible bg-gradient-to-br from-black via-[#ffe58f] to-black pb-14 pt-10 sm:pb-14 sm:pt-14"
+    >
       <div className="page-container mx-auto max-w-6xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -49,12 +55,21 @@ export function MarketingHowItWorks() {
             const Icon = s.icon;
             const isBlack = i % 2 === 0;
             return (
-              <TiltCard key={s.step} maxTilt={6} scale={1.02} className="h-full">
+              <TiltCard
+                key={s.step}
+                maxTilt={6}
+                scale={1.02}
+                className="h-full"
+              >
                 <motion.div
                   initial={{ opacity: 0, y: 36 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.6, delay: i * 0.12, ease: "easeOut" }}
+                  transition={{
+                    duration: 0.6,
+                    delay: i * 0.12,
+                    ease: "easeOut",
+                  }}
                   className={`flex h-full min-h-[280px] flex-col rounded-xl p-8 shadow-xl transition-all duration-300 hover:shadow-2xl sm:min-h-[300px] ${
                     isBlack ? "bg-black" : "bg-white"
                   }`}

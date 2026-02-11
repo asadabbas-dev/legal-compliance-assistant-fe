@@ -1,6 +1,6 @@
 "use client";
 
-import WorkspaceHeader from "@/components/workspace/workspace-header.component";
+import WorkspaceHeader from "@/components/workspace/components/workspace-header/workspace-header.component.jsx";
 
 export default function AppLayout({ children }) {
   return (

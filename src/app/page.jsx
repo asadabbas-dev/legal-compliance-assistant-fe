@@ -2,8 +2,8 @@
 
 import Auth from "@/auth/auth.component";
 import AUTH from "@/common/constants/auth.constant";
-import Landing from "@/components/landing/landing.component";
+import LandingPage from "@/components/landing/landing-page.component";
 
 export default function Home() {
-  return <Auth component={<Landing />} type={AUTH.PUBLIC} />;
+  return <Auth component={<LandingPage />} type={AUTH.PUBLIC} />;
 }

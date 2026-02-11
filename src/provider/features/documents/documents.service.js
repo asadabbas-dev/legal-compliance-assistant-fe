@@ -1,15 +1,15 @@
-import ragApi from "@/common/utils/rag-api.util";
+import api from "@/common/utils/api";
 import { ENDPOINT } from "@/endpoints";
 
 const uploadPdf = async (formData) => {
-  const response = await ragApi.post(ENDPOINT.rag.upload.path, formData, {
+  const response = await api().post(ENDPOINT.rag.upload.path, formData, {
     timeout: 60000,
   });
   return response.data;
 };
 
 const getDocuments = async () => {
-  const response = await ragApi.get(ENDPOINT.rag.documents.path);
+  const response = await api().get(ENDPOINT.rag.documents.path);
   return response.data;
 };
 

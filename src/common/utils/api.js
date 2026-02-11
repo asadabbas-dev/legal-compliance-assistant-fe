@@ -3,16 +3,16 @@
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { getAccessToken } from "./access-token.util";
-import { delay } from "./generic.util";
 import { removeUser } from "./users.util";
-import { getSessionId } from "./session";
 
 const api = (headers = null) => {
-  const accessToken = getAccessToken();
+  const accessToken =
+    (typeof window === "object" &&
+      window.localStorage?.getItem("rag_access_token")) ||
+    getAccessToken();
 
   const defaultHeaders = {
     Accept: "application/json",
-    "Content-Type": "application/json",
   };
 
   const combinedHeaders = accessToken
@@ -20,55 +20,45 @@ const api = (headers = null) => {
     : { ...defaultHeaders, ...headers };
 
   const apiInstance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_MAIN_URL,
+    baseURL:
+      process.env.NEXT_PUBLIC_MAIN_URL ||
+      process.env.NEXT_PUBLIC_RAG_API_URL ||
+      "http://localhost:8000/api/v1",
     headers: combinedHeaders,
   });
 
-  // Add request interceptor to set x-session-id ONLY for cart endpoints
+  // Request interceptor: auth + content-type handling
   apiInstance.interceptors.request.use((config) => {
-    if (!accessToken) {
-      // Only add x-session-id for cart endpoints
-      const isCartEndpoint = config.url && config.url.startsWith("/cart");
-      if (isCartEndpoint) {
-        const sessionId = getSessionId();
-        if (sessionId) {
-          config.headers["x-session-id"] = sessionId;
-        }
+    // Keep multipart uploads valid (browser sets boundary automatically).
+    if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+      if (config.headers && typeof config.headers.delete === "function") {
+        config.headers.delete("Content-Type");
+      } else if (config.headers) {
+        delete config.headers["Content-Type"];
       }
+    } else if (!config.headers?.["Content-Type"]) {
+      config.headers["Content-Type"] = "application/json";
     }
+
     return config;
   });
 
   apiInstance.interceptors.response.use(
-    async (response) => {
-      const method = response.config.method;
-      const endpoint = response.config.url?.split("/").pop();
-
-      const isSuccessResponse =
-        (method === "get" && endpoint === "generate-otp") ||
-        (["post", "put", "delete"].includes(method) &&
-          !["get", "get-all"].includes(endpoint) &&
-          !["/upload/single", "/upload/multiple"].includes(
-            response.config.url,
-          ));
-
-      if (isSuccessResponse) {
-        // enqueueSnackbar(response.data?.message || "Success", { variant: "success" });
-        await delay(700);
-      }
-
-      return response;
-    },
+    (response) => response,
     (error) => {
       // Network issues
       if (error.message === "Network Error") {
-        // enqueueSnackbar(error.message, { variant: "error" });
+        enqueueSnackbar(error.message, { variant: "error" });
         throw error;
       }
 
       const status = error.response?.status;
+      const detail = error.response?.data?.detail;
       const message =
-        error.response?.data?.message || error.message || error.toString();
+        error.response?.data?.message ||
+        detail ||
+        error.message ||
+        error.toString();
 
       // Handle unauthorized
       if (status === 401 && typeof window !== "undefined") {
@@ -77,23 +67,18 @@ const api = (headers = null) => {
         return;
       }
 
-      // Handle message display
-      if (Array.isArray(message)) {
-        // message.forEach((msg) => enqueueSnackbar(msg, { variant: "error" }));
-      } else {
-        const responseURL = error.request?.responseURL;
-        const currentEndpoint = responseURL?.split("/").pop();
-
-        if (currentEndpoint === "current-business-setting") {
-          return error.message;
-        }
-
-        if (message !== "Record Not Found") {
-          // enqueueSnackbar(message, { variant: "error" });
-        }
+      if (Array.isArray(detail)) {
+        detail.forEach((item) =>
+          enqueueSnackbar(item?.msg || String(item), { variant: "error" }),
+        );
+      } else if (
+        typeof message === "string" &&
+        message !== "Record Not Found"
+      ) {
+        enqueueSnackbar(message, { variant: "error" });
       }
 
-      return Promise.reject(error); // Reject instead of returning raw response
+      return Promise.reject(error);
     },
   );
 

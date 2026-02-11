@@ -46,13 +46,11 @@ function LayoutWrapper({ children }) {
 
   return (
     <>
-      {loading && <FullPageLoader />}
-      <React.Fragment>
-        {/* {!loading && <Header />} */}
+      {loading ? (
+        <FullPageLoader />
+      ) : (
         <div className="min-h-screen bg-background-secondary">{children}</div>
-        {/* <div className="pt-52 lg:pt-40">{children}</div> */}
-        {/* {!loading && <Footer />} */}
-      </React.Fragment>
+      )}
     </>
   );
 }
@@ -68,7 +66,11 @@ export default function RootLayout({ children }) {
       <head>
         <title>Compliance Assistant</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
           rel="stylesheet"

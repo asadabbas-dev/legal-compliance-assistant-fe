@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { StraightInclinedDivider } from "./SectionDivider";
-import { TiltCard } from "./TiltCard";
+import { AnimatePresence, motion } from "framer-motion";
+import { StraightInclinedDivider } from "@/components/landing/components/section-divider/section-divider.component";
+import TiltCard from "@/components/landing/components/tilt-card/tilt-card.component";
 
-const FAQS = [
+const faqs = [
   {
     q: "How does it work?",
     a: "Upload your PDF documents, then ask questions in plain language. The AI searches your files and returns answers with page-level citations.",
@@ -20,11 +20,14 @@ const FAQS = [
   },
 ];
 
-export function MarketingFAQ() {
+export default function Faq() {
   const [open, setOpen] = useState(0);
 
   return (
-    <section id="faq" className="relative overflow-visible bg-gradient-to-br from-black via-[#ffe58f] to-black pb-14 pt-10 sm:pb-14 sm:pt-14">
+    <section
+      id="faq"
+      className="relative overflow-visible bg-gradient-to-br from-black via-[#ffe58f] to-black pb-14 pt-10 sm:pb-14 sm:pt-14"
+    >
       <div className="page-container mx-auto max-w-3xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -39,7 +42,7 @@ export function MarketingFAQ() {
         </motion.div>
 
         <div className="mt-8 space-y-3">
-          {FAQS.map((faq, i) => {
+          {faqs.map((faq, i) => {
             const isBlack = i % 2 === 0;
             return (
               <TiltCard key={i} maxTilt={4} scale={1.01} className="w-full">

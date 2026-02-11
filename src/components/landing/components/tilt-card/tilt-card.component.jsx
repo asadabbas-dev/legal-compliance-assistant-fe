@@ -3,10 +3,12 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
-/**
- * Wrapper that adds 3D tilt effect on hover based on mouse position.
- */
-export function TiltCard({ children, className = "", maxTilt = 8, scale = 1.02 }) {
+export default function TiltCard({
+  children,
+  className = "",
+  maxTilt = 8,
+  scale = 1.02,
+}) {
   const cardRef = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -14,7 +16,7 @@ export function TiltCard({ children, className = "", maxTilt = 8, scale = 1.02 }
   const rotateX = useSpring(y, springConfig);
   const rotateY = useSpring(x, springConfig);
 
-  const handleMouseMove = (e) => {
+  function handleMouseMove(e) {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -25,12 +27,12 @@ export function TiltCard({ children, className = "", maxTilt = 8, scale = 1.02 }
     const tiltY = (mouseX / (rect.width / 2)) * maxTilt;
     x.set(tiltY);
     y.set(tiltX);
-  };
+  }
 
-  const handleMouseLeave = () => {
+  function handleMouseLeave() {
     x.set(0);
     y.set(0);
-  };
+  }
 
   return (
     <motion.div

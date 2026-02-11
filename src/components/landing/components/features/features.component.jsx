@@ -4,10 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FileCheck, Search, Users } from "lucide-react";
-import { StraightInclinedDivider } from "./SectionDivider";
-import { TiltCard } from "./TiltCard";
+import { StraightInclinedDivider } from "@/components/landing/components/section-divider/section-divider.component";
+import TiltCard from "@/components/landing/components/tilt-card/tilt-card.component";
 
-const FEATURES = [
+const features = [
   {
     title: "Contract review",
     description: "Find clauses and terms across all your agreements instantly.",
@@ -44,40 +44,43 @@ function FeatureCard({ feature, index }) {
         transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
         className="group h-full overflow-hidden rounded-xl bg-slate-800 shadow-xl transition-all duration-300 hover:shadow-2xl"
       >
-      <div className="relative aspect-[4/3] overflow-hidden">
-        {error ? (
-          <div className="flex h-full items-center justify-center bg-slate-700">
-            <Icon className="h-12 w-12 text-slate-400" strokeWidth={1.5} />
-          </div>
-        ) : (
-          <Image
-            src={feature.src}
-            alt={feature.alt}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, 33vw"
-            onError={() => setError(true)}
-          />
-        )}
-        <div className="absolute inset-0 bg-slate-900/60" />
-        <div className="absolute bottom-0 left-0 right-0 flex items-center gap-3 p-6">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/20">
-            <Icon className="h-5 w-5 text-white" strokeWidth={2} />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
-            <p className="text-sm text-white/90">{feature.description}</p>
+        <div className="relative aspect-[4/3] overflow-hidden">
+          {error ? (
+            <div className="flex h-full items-center justify-center bg-slate-700">
+              <Icon className="h-12 w-12 text-slate-400" strokeWidth={1.5} />
+            </div>
+          ) : (
+            <Image
+              src={feature.src}
+              alt={feature.alt}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, 33vw"
+              onError={() => setError(true)}
+            />
+          )}
+          <div className="absolute inset-0 bg-slate-900/60" />
+          <div className="absolute bottom-0 left-0 right-0 flex items-center gap-3 p-6">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/20">
+              <Icon className="h-5 w-5 text-white" strokeWidth={2} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
+              <p className="text-sm text-white/90">{feature.description}</p>
+            </div>
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
     </TiltCard>
   );
 }
 
-export function MarketingFeatures() {
+export default function Features() {
   return (
-    <section id="features" className="relative overflow-visible bg-gradient-to-br from-black via-black to-[#ffe58f] pb-14 pt-10 sm:pb-14 sm:pt-14">
+    <section
+      id="features"
+      className="relative overflow-visible bg-gradient-to-br from-black via-black to-[#ffe58f] pb-14 pt-10 sm:pb-14 sm:pt-14"
+    >
       <div className="page-container mx-auto max-w-6xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -94,7 +97,7 @@ export function MarketingFeatures() {
         </motion.div>
 
         <div className="mx-auto mt-8 grid w-full max-w-6xl gap-5 sm:grid-cols-3">
-          {FEATURES.map((f, i) => (
+          {features.map((f, i) => (
             <FeatureCard key={f.title} feature={f} index={i} />
           ))}
         </div>
@@ -103,4 +106,3 @@ export function MarketingFeatures() {
     </section>
   );
 }
-

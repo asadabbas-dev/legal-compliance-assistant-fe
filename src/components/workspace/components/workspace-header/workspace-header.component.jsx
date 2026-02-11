@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { FileText } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getAccessToken } from "@/common/utils/access-token.util";
 
 /**
  * Header for the app workspace. Minimal, chat-style.
@@ -9,6 +11,16 @@ import { FileText } from "lucide-react";
  * Uses !important overrides to beat global link styles (text-primary-600).
  */
 export default function WorkspaceHeader() {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hasToken =
+      Boolean(window.localStorage.getItem("rag_access_token")) ||
+      Boolean(getAccessToken());
+    setIsSignedIn(hasToken);
+  }, []);
+
   return (
     <header className="shrink-0 border-b border-white/15 bg-black/98 backdrop-blur-sm">
       <div className="flex h-12 min-h-0 items-center justify-between gap-2 px-3 sm:h-14 sm:px-4 lg:px-6">
@@ -24,6 +36,20 @@ export default function WorkspaceHeader() {
           </span>
         </Link>
         <nav className="flex shrink-0 items-center gap-1 sm:gap-2">
+          <span
+            className={`hidden rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide sm:inline-flex sm:text-[11px] ${
+              isSignedIn
+                ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/30"
+                : "bg-white/10 text-white/80 ring-1 ring-white/20"
+            }`}
+            title={
+              isSignedIn
+                ? "Signed in: chat history is saved."
+                : "Guest mode: chat history is not saved."
+            }
+          >
+            {isSignedIn ? "Signed In - History On" : "Guest Mode - History Off"}
+          </span>
           <Link
             href="/"
             className="rounded-lg px-2 py-1.5 text-xs font-medium !text-white transition-colors hover:bg-white/10 hover:!text-amber-400 sm:px-3 sm:py-2 sm:text-sm"

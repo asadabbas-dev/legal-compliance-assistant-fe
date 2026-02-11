@@ -13,8 +13,8 @@ import {
   Gavel,
   CheckCircle,
 } from "lucide-react";
-import { ProductMockup } from "../ProductMockup";
-import { StraightInclinedDivider } from "./SectionDivider";
+import ProductMockup from "@/components/landing/components/product-mockup/product-mockup.component";
+import { StraightInclinedDivider } from "@/components/landing/components/section-divider/section-divider.component";
 
 const HERO_DESCRIPTION =
   "Upload your documents, ask in plain language, and get answers with page-level citations. Built for legal and compliance teams.";
@@ -222,7 +222,7 @@ const TRUST_ITEMS = [
   { text: "Private & secure", icon: Shield },
 ];
 
-export function MarketingHero() {
+export default function Hero() {
   return (
     <section className="relative overflow-visible bg-gradient-to-br from-black via-black to-[#ffe58f] pb-14 pt-20 sm:pb-14 sm:pt-24">
       <FloatingOrbs />

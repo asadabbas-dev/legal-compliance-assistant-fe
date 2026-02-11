@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { StraightInclinedDivider } from "./SectionDivider";
+import { StraightInclinedDivider } from "@/components/landing/components/section-divider/section-divider.component";
 
-export function MarketingCTA() {
+export default function Cta() {
   return (
     <section className="relative overflow-visible bg-gradient-to-br from-black via-[#ffe58f] to-[#ffe58f] pb-14 pt-10 sm:pb-14 sm:pt-14">
       <div className="page-container mx-auto max-w-4xl px-4 text-center">
@@ -17,7 +17,8 @@ export function MarketingCTA() {
             Ready to get started?
           </h2>
           <p className="mx-auto mb-6 max-w-xl !text-slate-800 font-medium">
-            Upload your documents and start asking questions in minutes. No credit card required.
+            Upload your documents and start asking questions in minutes. No credit
+            card required.
           </p>
           <motion.div
             whileHover={{ scale: 1.05, rotateX: 5, rotateY: 2 }}

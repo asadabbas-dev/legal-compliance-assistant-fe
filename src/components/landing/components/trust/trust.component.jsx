@@ -4,16 +4,16 @@ import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-auto-scroll";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import { StraightInclinedDivider } from "./SectionDivider";
-import { TiltCard } from "./TiltCard";
+import { StraightInclinedDivider } from "@/components/landing/components/section-divider/section-divider.component";
+import TiltCard from "@/components/landing/components/tilt-card/tilt-card.component";
 
-const STATS = [
+const stats = [
   { value: "10x", label: "Faster than manual search" },
   { value: "100%", label: "Answers from your docs" },
   { value: "0", label: "Training required" },
 ];
 
-const TESTIMONIALS = [
+const testimonials = [
   {
     quote: "Saves hours every week. Answers are always cited and verifiable.",
     name: "Sarah M.",
@@ -35,13 +35,17 @@ function StarRating() {
   return (
     <div className="mb-3 flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" strokeWidth={2} />
+        <Star
+          key={i}
+          className="h-4 w-4 fill-amber-400 text-amber-400"
+          strokeWidth={2}
+        />
       ))}
     </div>
   );
 }
 
-export function MarketingTrust() {
+export default function Trust() {
   const [emblaRef] = useEmblaCarousel(
     { loop: true, align: "start" },
     [
@@ -51,7 +55,7 @@ export function MarketingTrust() {
         stopOnInteraction: false,
         stopOnMouseEnter: false,
       }),
-    ]
+    ],
   );
 
   return (
@@ -77,7 +81,7 @@ export function MarketingTrust() {
           viewport={{ once: true }}
           className="mt-8 grid gap-5 sm:grid-cols-3"
         >
-          {STATS.map((stat, i) => {
+          {stats.map((stat, i) => {
             const isBlack = i % 2 === 0;
             return (
               <div
@@ -108,7 +112,7 @@ export function MarketingTrust() {
         <div className="mt-8 overflow-hidden" data-lenis-prevent>
           <div ref={emblaRef} className="overflow-hidden">
             <div className="flex gap-6">
-              {[...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
+              {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
                 <div
                   key={`${t.name}-${i}`}
                   className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%]"

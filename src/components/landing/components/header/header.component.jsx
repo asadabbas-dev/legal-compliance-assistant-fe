@@ -1,18 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
-const NAV_LINKS = [
-  { label: "How it works", href: "/#how-it-works" },
-  { label: "Features", href: "/#features" },
-  { label: "FAQ", href: "/#faq" },
-];
-
-export function MarketingHeader() {
+export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { label: "How it works", href: "/#how-it-works" },
+    { label: "Features", href: "/#features" },
+    { label: "FAQ", href: "/#faq" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -31,7 +31,9 @@ export function MarketingHeader() {
     };
   }, [mobileOpen]);
 
-  const closeMobile = () => setMobileOpen(false);
+  function closeMobile() {
+    setMobileOpen(false);
+  }
 
   return (
     <header
@@ -48,12 +50,11 @@ export function MarketingHeader() {
           Compliance Assistant
         </Link>
 
-        {/* Desktop nav */}
         <nav
           className="hidden items-center gap-6 lg:flex lg:gap-8"
           aria-label="Main navigation"
         >
-          {NAV_LINKS.map(({ label, href }) => (
+          {navLinks.map(({ label, href }) => (
             <Link
               key={href}
               href={href}
@@ -76,7 +77,6 @@ export function MarketingHeader() {
           </Link>
         </nav>
 
-        {/* Mobile menu button */}
         <button
           type="button"
           onClick={() => setMobileOpen((o) => !o)}
@@ -92,7 +92,6 @@ export function MarketingHeader() {
         </button>
       </div>
 
-      {/* Mobile menu panel - solid black so it always shows on small screens */}
       <div
         className={`fixed inset-0 top-14 z-40 bg-black transition-all duration-300 ease-out sm:top-16 lg:hidden ${
           mobileOpen
@@ -107,7 +106,7 @@ export function MarketingHeader() {
           style={{ backgroundColor: "#000" }}
           aria-label="Mobile navigation"
         >
-          {NAV_LINKS.map(({ label, href }) => (
+          {navLinks.map(({ label, href }) => (
             <Link
               key={href}
               href={href}

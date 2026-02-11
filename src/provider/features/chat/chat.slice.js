@@ -11,6 +11,10 @@ const generalState = {
 
 const initialState = {
   ask: generalState,
+  create: generalState,
+  list: generalState,
+  history: generalState,
+  message: generalState,
   feedback: generalState,
 };
 
@@ -43,6 +47,58 @@ export const submitFeedback = createAsyncThunk(
   }
 );
 
+export const createChatSession = createAsyncThunk(
+  "chat/create",
+  async ({ title = "New chat", successCallBack }, thunkAPI) => {
+    try {
+      const response = await chatService.createChat(title);
+      successCallBack?.(response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error?.response?.data || { message: error.message });
+    }
+  }
+);
+
+export const fetchChats = createAsyncThunk(
+  "chat/list",
+  async ({ successCallBack }, thunkAPI) => {
+    try {
+      const response = await chatService.listChats();
+      successCallBack?.(response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error?.response?.data || { message: error.message });
+    }
+  }
+);
+
+export const fetchChatHistory = createAsyncThunk(
+  "chat/history",
+  async ({ chatId, successCallBack }, thunkAPI) => {
+    try {
+      const response = await chatService.getChatHistory(chatId);
+      successCallBack?.(response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error?.response?.data || { message: error.message });
+    }
+  }
+);
+
+export const sendChatMessage = createAsyncThunk(
+  "chat/message",
+  async ({ chatId, content, successCallBack }, thunkAPI) => {
+    try {
+      const response = await chatService.sendChatMessage(chatId, content);
+      successCallBack?.(response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error?.response?.data || { message: error.message });
+    }
+  }
+);
+
 export const chatSlice = createSlice({
   name: "chat",
   initialState,
@@ -52,6 +108,12 @@ export const chatSlice = createSlice({
     },
     resetFeedback: (state) => {
       state.feedback = generalState;
+    },
+    resetChatData: (state) => {
+      state.create = generalState;
+      state.list = generalState;
+      state.history = generalState;
+      state.message = generalState;
     },
   },
   extraReducers: (builder) => {
@@ -74,6 +136,58 @@ export const chatSlice = createSlice({
         state.ask.isError = true;
         state.ask.data = null;
       })
+      .addCase(createChatSession.pending, (state) => {
+        state.create.isLoading = true;
+      })
+      .addCase(createChatSession.fulfilled, (state, action) => {
+        state.create.isLoading = false;
+        state.create.isSuccess = true;
+        state.create.data = action.payload;
+      })
+      .addCase(createChatSession.rejected, (state, action) => {
+        state.create.isLoading = false;
+        state.create.isError = true;
+        state.create.message = action.payload?.message || "Failed to create chat";
+      })
+      .addCase(fetchChats.pending, (state) => {
+        state.list.isLoading = true;
+      })
+      .addCase(fetchChats.fulfilled, (state, action) => {
+        state.list.isLoading = false;
+        state.list.isSuccess = true;
+        state.list.data = action.payload;
+      })
+      .addCase(fetchChats.rejected, (state, action) => {
+        state.list.isLoading = false;
+        state.list.isError = true;
+        state.list.message = action.payload?.message || "Failed to fetch chats";
+      })
+      .addCase(fetchChatHistory.pending, (state) => {
+        state.history.isLoading = true;
+      })
+      .addCase(fetchChatHistory.fulfilled, (state, action) => {
+        state.history.isLoading = false;
+        state.history.isSuccess = true;
+        state.history.data = action.payload;
+      })
+      .addCase(fetchChatHistory.rejected, (state, action) => {
+        state.history.isLoading = false;
+        state.history.isError = true;
+        state.history.message = action.payload?.message || "Failed to fetch history";
+      })
+      .addCase(sendChatMessage.pending, (state) => {
+        state.message.isLoading = true;
+      })
+      .addCase(sendChatMessage.fulfilled, (state, action) => {
+        state.message.isLoading = false;
+        state.message.isSuccess = true;
+        state.message.data = action.payload;
+      })
+      .addCase(sendChatMessage.rejected, (state, action) => {
+        state.message.isLoading = false;
+        state.message.isError = true;
+        state.message.message = action.payload?.message || "Failed to send message";
+      })
       .addCase(submitFeedback.pending, (state) => {
         state.feedback.isLoading = true;
       })
@@ -88,5 +202,5 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { resetAsk, resetFeedback } = chatSlice.actions;
+export const { resetAsk, resetFeedback, resetChatData } = chatSlice.actions;
 export default chatSlice.reducer;
