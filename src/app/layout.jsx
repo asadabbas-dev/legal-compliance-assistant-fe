@@ -27,31 +27,46 @@ const StyledMaterialDesignContent = styled(MaterialDesignContent)(() => ({
   },
 }));
 
+// Routes where Lenis smooth scroll should be DISABLED
+// because they have their own inner scroll containers (like the chat workspace)
+const LENIS_DISABLED_ROUTES = ["/app", "/workspace"];
+
 function LayoutWrapper({ children }) {
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Next.js App Router doesn’t expose router events like Pages Router
-    // but we can use the usePathname hook to detect route changes
+  // Disable Lenis on routes that manage their own scroll
+  const lenisDisabled = LENIS_DISABLED_ROUTES.some((route) =>
+    pathname?.startsWith(route),
+  );
 
-    setLoading(true); // start loading on path change
-    // Delay hiding loading state a bit for smoothness
+  useEffect(() => {
+    setLoading(true);
     const timeout = setTimeout(() => {
       setLoading(false);
     }, 500);
-
     return () => clearTimeout(timeout);
   }, [pathname]);
 
+  if (loading) {
+    return <FullPageLoader />;
+  }
+
+  // For workspace/chat routes: use h-screen + overflow-hidden so that
+  // the inner flex layout can control its own scroll properly.
+  // For all other routes: use min-h-screen so pages can scroll naturally.
+  if (lenisDisabled) {
+    return (
+      <div className="h-screen overflow-hidden bg-background-secondary">
+        {children}
+      </div>
+    );
+  }
+
   return (
-    <>
-      {loading ? (
-        <FullPageLoader />
-      ) : (
-        <div className="min-h-screen bg-background-secondary">{children}</div>
-      )}
-    </>
+    <LenisProvider>
+      <div className="min-h-screen bg-background-secondary">{children}</div>
+    </LenisProvider>
   );
 }
 
@@ -89,9 +104,7 @@ export default function RootLayout({ children }) {
           >
             <Provider store={store}>
               <PersistGate loading={null} persistor={persistor}>
-                <LenisProvider>
-                  <LayoutWrapper>{children}</LayoutWrapper>
-                </LenisProvider>
+                <LayoutWrapper>{children}</LayoutWrapper>
               </PersistGate>
             </Provider>
           </SnackbarProvider>

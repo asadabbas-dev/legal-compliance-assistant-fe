@@ -35,7 +35,7 @@ export default function Workspace() {
   } = useWorkspace();
 
   return (
-    <div className="flex min-h-0 flex-1 overflow-hidden">
+    <div className="flex flex-1 min-h-0 overflow-hidden">
       {mobileSidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/60 lg:hidden"
@@ -56,8 +56,9 @@ export default function Workspace() {
         documents={documents}
       />
 
-      <main className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2 sm:px-4 sm:py-3 lg:hidden">
+      <main className="flex flex-1 flex-col min-h-0 overflow-hidden">
+        {/* Mobile top bar */}
+        <div className="shrink-0 flex items-center gap-2 border-b border-white/10 px-3 py-2 sm:px-4 sm:py-3 lg:hidden">
           <button
             type="button"
             onClick={() => setMobileSidebarOpen(true)}
@@ -69,31 +70,37 @@ export default function Workspace() {
           </button>
         </div>
 
-        <WorkspaceMessages
-          messages={messages}
-          ask={ask}
-          hasDocuments={hasDocuments}
-          handleFeedback={handleFeedback}
-          messagesEndRef={messagesEndRef}
-        />
+        {/* SCROLL AREA */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <WorkspaceMessages
+            messages={messages}
+            ask={ask}
+            hasDocuments={hasDocuments}
+            handleFeedback={handleFeedback}
+            messagesEndRef={messagesEndRef}
+          />
+        </div>
 
-        <WorkspaceChatInput
-          fileInputRef={fileInputRef}
-          selectedFile={selectedFile}
-          upload={upload}
-          ask={ask}
-          question={question}
-          setQuestion={setQuestion}
-          hasDocuments={hasDocuments}
-          handleFileSelect={handleFileSelect}
-          handleUploadClick={handleUploadClick}
-          handleSubmitUpload={handleSubmitUpload}
-          handleClearFile={handleClearFile}
-          handleFormSubmit={handleFormSubmit}
-          handleDragOver={handleDragOver}
-          handleDragLeave={handleDragLeave}
-          handleDropFile={handleDropFile}
-        />
+        {/* Chat input pinned to bottom */}
+        <div className="shrink-0">
+          <WorkspaceChatInput
+            fileInputRef={fileInputRef}
+            selectedFile={selectedFile}
+            upload={upload}
+            ask={ask}
+            question={question}
+            setQuestion={setQuestion}
+            hasDocuments={hasDocuments}
+            handleFileSelect={handleFileSelect}
+            handleUploadClick={handleUploadClick}
+            handleSubmitUpload={handleSubmitUpload}
+            handleClearFile={handleClearFile}
+            handleFormSubmit={handleFormSubmit}
+            handleDragOver={handleDragOver}
+            handleDragLeave={handleDragLeave}
+            handleDropFile={handleDropFile}
+          />
+        </div>
       </main>
     </div>
   );

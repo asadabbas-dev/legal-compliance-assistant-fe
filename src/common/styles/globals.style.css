@@ -24,6 +24,14 @@
       "calt" 1;
   }
 
+  html,
+  body,
+  #__next {
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden; /* parent scroll handled by children */
+  }
+
   /* Remove number input arrows */
   input[type="number"] {
     -moz-appearance: textfield;

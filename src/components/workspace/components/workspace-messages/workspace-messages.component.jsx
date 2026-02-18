@@ -11,8 +11,8 @@ export default function WorkspaceMessages({
   messagesEndRef,
 }) {
   return (
-    <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-3xl px-3 py-4 sm:px-4 sm:py-6">
+    <div className="px-3 py-4 sm:px-4 sm:py-6">
+      <div className="mx-auto max-w-3xl">
         {messages.length === 0 && !ask.isLoading && !hasDocuments && (
           <div className="flex flex-col items-center justify-center py-8 text-center sm:py-12 md:py-16">
             <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-amber-400/10 ring-1 ring-amber-400/30 sm:mb-6 sm:h-20 sm:w-20 sm:rounded-2xl">
@@ -24,6 +24,30 @@ export default function WorkspaceMessages({
             <p className="mt-2 max-w-md text-sm text-white/80 sm:mt-3 sm:text-base">
               Upload policies, contracts, or HR documents below. Then ask
               questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
+              citations. Upload policies, contracts, or HR documents below. Then
+              ask questions in plain language and get answers with page-level
               citations.
             </p>
             <div className="mt-6 grid gap-2 text-left sm:mt-8 sm:grid-cols-2 sm:gap-3">
@@ -79,7 +103,11 @@ export default function WorkspaceMessages({
                       <button
                         type="button"
                         onClick={() =>
-                          handleFeedback(1, messages[idx - 1]?.content, msg.content)
+                          handleFeedback(
+                            1,
+                            messages[idx - 1]?.content,
+                            msg.content,
+                          )
                         }
                         className="rounded p-1.5 text-white/70 hover:bg-amber-400/20 hover:text-amber-400"
                         title="Helpful"
@@ -89,7 +117,11 @@ export default function WorkspaceMessages({
                       <button
                         type="button"
                         onClick={() =>
-                          handleFeedback(-1, messages[idx - 1]?.content, msg.content)
+                          handleFeedback(
+                            -1,
+                            messages[idx - 1]?.content,
+                            msg.content,
+                          )
                         }
                         className="rounded p-1.5 text-white/70 hover:bg-red-500/20 hover:text-red-400"
                         title="Not helpful"
@@ -124,7 +156,9 @@ export default function WorkspaceMessages({
         {ask.isLoading && (
           <div className="flex items-center gap-2 rounded-2xl bg-white/5 px-4 py-3">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
-            <span className="text-sm text-white/90">Searching your documents...</span>
+            <span className="text-sm text-white/90">
+              Searching your documents...
+            </span>
           </div>
         )}
 

@@ -76,9 +76,9 @@ export default function WorkspaceSidebar({
                         {new Date(doc.created_at).toLocaleDateString()}
                       </p>
                     </div>
-                    <span className="mt-0.5 shrink-0 rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-medium text-amber-400 sm:text-xs">
+                    {/* <span className="mt-0.5 shrink-0 rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-medium text-amber-400 sm:text-xs">
                       {doc.status || "Ready"}
-                    </span>
+                    </span> */}
                   </div>
                 ))
               )}

@@ -4,9 +4,12 @@ import WorkspaceHeader from "@/components/workspace/components/workspace-header/
 
 export default function AppLayout({ children }) {
   return (
-    <div className="flex h-screen min-h-0 flex-col overflow-hidden bg-black">
+    // h-screen + overflow-hidden creates a fixed viewport box.
+    // The header shrinks to its natural height, children get the rest via flex-1 + min-h-0.
+    <div className="flex flex-col h-screen overflow-hidden bg-black">
       <WorkspaceHeader />
-      <div className="flex min-h-0 flex-1 overflow-hidden">{children}</div>
+      {/* flex-1 min-h-0 = "take remaining height but don't overflow the parent" */}
+      <div className="flex flex-1 min-h-0 overflow-hidden">{children}</div>
     </div>
   );
 }
