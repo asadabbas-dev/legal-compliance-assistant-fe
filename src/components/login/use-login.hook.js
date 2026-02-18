@@ -26,7 +26,6 @@ export default function useLogin() {
   const router = useRouter();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
   const {
@@ -42,10 +41,10 @@ export default function useLogin() {
 
   const { email, password } = watch();
 
-  useEffect(() => {
-    if (isLoginVerified()) {
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   if (isLoginVerified()) {
+  //   }
+  // }, [router]);
 
   useEffect(() => {
     handleLogin();
@@ -109,12 +108,10 @@ export default function useLogin() {
 
   return {
     onSubmit,
-    borderStyle,
-    borderSuc,
-    showPassword,
+
     isChecked,
     setIsChecked,
-    toggleShowPassword,
+
     router,
     loading,
     loginWithOAuth,

@@ -8,12 +8,8 @@ export default function Login() {
   // hooks
   const {
     onSubmit,
-    borderStyle,
-    borderSuc,
-    showPassword,
     isChecked,
     setIsChecked,
-    toggleShowPassword,
     router,
     loading,
     register,
@@ -37,11 +33,16 @@ export default function Login() {
           <div className="form-header">
             {/* <h1 className="form-header-h1">Login</h1> */}
             <p className="form-header-p">
-              Welcome back. <span className="text-primary">Login</span> to your account
+              Welcome back. <span className="text-primary">Login</span> to your
+              account
             </p>
           </div>
           <div className="form-body">
-            <form className="w-full" onSubmit={handleSubmit(onSubmit)} method="post">
+            <form
+              className="w-full"
+              onSubmit={handleSubmit(onSubmit)}
+              method="post"
+            >
               <div className="form-fields">
                 <CustomInput
                   label="Email/Username"
@@ -64,7 +65,10 @@ export default function Login() {
               </div>
 
               <div className="mt-4 flex items-center justify-between">
-                <div className="flex gap-[6.5px]" onClick={() => setIsChecked(!isChecked)}>
+                <div
+                  className="flex gap-[6.5px]"
+                  onClick={() => setIsChecked(!isChecked)}
+                >
                   {isChecked ? (
                     <img src="/assets/icons/check.svg" alt="" />
                   ) : (
@@ -82,7 +86,11 @@ export default function Login() {
                 </div>
                 <Link
                   href="/forget-password"
-                  onClick={() => router.push("/forget-password?btnText=Password%20Recovery%20Link")}
+                  onClick={() =>
+                    router.push(
+                      "/forget-password?btnText=Password%20Recovery%20Link",
+                    )
+                  }
                   className="forgotText rounded-xl text-xs font-bold leading-[18px] "
                 >
                   Forgot Password?
