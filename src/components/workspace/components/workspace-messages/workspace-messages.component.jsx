@@ -24,30 +24,6 @@ export default function WorkspaceMessages({
             <p className="mt-2 max-w-md text-sm text-white/80 sm:mt-3 sm:text-base">
               Upload policies, contracts, or HR documents below. Then ask
               questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
-              citations. Upload policies, contracts, or HR documents below. Then
-              ask questions in plain language and get answers with page-level
               citations.
             </p>
             <div className="mt-6 grid gap-2 text-left sm:mt-8 sm:grid-cols-2 sm:gap-3">
