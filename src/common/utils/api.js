@@ -6,10 +6,14 @@ import { getAccessToken } from "./access-token.util";
 import { removeUser } from "./users.util";
 
 const api = (headers = null) => {
+  console.log("🔍 DEBUG: api function called");
+
   const accessToken =
     (typeof window === "object" &&
       window.localStorage?.getItem("rag_access_token")) ||
     getAccessToken();
+
+  console.log("🔍 DEBUG: accessToken retrieved:", !!accessToken);
 
   const defaultHeaders = {
     Accept: "application/json",

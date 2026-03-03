@@ -1,15 +1,18 @@
-'use client';
+"use client";
 
-import { isJwtExpired } from 'jwt-check-expiration';
-// import authService from '@/provider/features/auth/auth.service'; // REMOVED: Causes circular dependency
-import { getUser } from './users.util';
+import { isJwtExpired } from "jwt-check-expiration";
+import authService from "@/provider/features/auth/auth.service";
+import { getUser } from "./users.util";
 
 /**
  * Retrive access token from local storage
  * @returns string | undefined
  */
 export const getAccessToken = (data) => {
-  if ((typeof window === 'object' && window?.localStorage?.getItem('user')) || data) {
+  if (
+    (typeof window === "object" && window?.localStorage?.getItem("user")) ||
+    data
+  ) {
     const user = data ?? getUser();
     return user?.loginVerifiedToken?.[0]?.token;
   }
@@ -21,7 +24,10 @@ export const getAccessToken = (data) => {
  * @returns bool
  */
 export const isLoginVerified = (data) => {
-  if ((typeof window === 'object' && window?.localStorage?.getItem('user')) || data) {
+  if (
+    (typeof window === "object" && window?.localStorage?.getItem("user")) ||
+    data
+  ) {
     const user = data ?? getUser();
     return user?.loginVerifiedToken?.[0]?.isLoginVerified;
   }
@@ -33,9 +39,9 @@ export const isLoginVerified = (data) => {
  * @returns date | undefined
  */
 export const getAccessTokenExpiry = () => {
-  if (typeof window === 'object') {
+  if (typeof window === "object") {
     const accessTokenExpiry = JSON.parse(
-      window.localStorage.getItem('accessTokenExpiry')
+      window.localStorage.getItem("accessTokenExpiry"),
     );
     return accessTokenExpiry;
   }
@@ -47,12 +53,10 @@ export const getAccessTokenExpiry = () => {
  * @returns false | true
  */
 export const checkForOldToken = async () => {
-  if (typeof window === 'object' && window?.localStorage?.getItem('user')) {
+  if (typeof window === "object" && window?.localStorage?.getItem("user")) {
     if (getUser()?.loginVerifiedToken?.[0].token) {
-      // REMOVED: authService.logout() call to fix circular dependency
-      // Just remove the user data locally
-      localStorage.removeItem('user');
-      return true;
+      const response = await authService.logout();
+      return response.Succeeded;
     }
     return false;
   }
@@ -64,7 +68,7 @@ export const checkForOldToken = async () => {
  * @returns string | null
  */
 export const checkExpiryDateOfToken = () => {
-  if (typeof window === 'object' && window?.localStorage?.getItem('user')) {
+  if (typeof window === "object" && window?.localStorage?.getItem("user")) {
     if (getUser()?.loginVerifiedToken?.[0].token) {
       if (isJwtExpired(getUser()?.loginVerifiedToken?.[0].token) === false) {
         return true;

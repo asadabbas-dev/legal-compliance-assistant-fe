@@ -4,6 +4,9 @@ export const ENDPOINT = {
     login: { method: "POST", path: "/auth/login" },
     me: { method: "GET", path: "/auth/me" },
   },
+  anonymous: {
+    token: { method: "POST", path: "/anonymous/token" },
+  },
   rag: {
     upload: { method: "POST", path: "/documents/upload" },
     process: { method: "POST", path: "/documents/process" },
