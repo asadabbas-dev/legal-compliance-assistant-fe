@@ -1,10 +1,5 @@
-console.log("🔍 DEBUG: auth.service.js - Starting import");
-
 import api from "@/common/utils/api";
-console.log("🔍 DEBUG: api imported in auth.service");
-
 import { removeUser } from "@/common/utils/users.util";
-console.log("🔍 DEBUG: removeUser imported in auth.service");
 
 // Login user
 const login = async (userData) => {

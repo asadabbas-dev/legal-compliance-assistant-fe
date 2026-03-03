@@ -1,7 +1,47 @@
 "use client";
 
-import { FileText, Paperclip, ThumbsDown, ThumbsUp } from "lucide-react";
-import CitationItem from "@/components/workspace/components/citation-item/citation-item.component";
+import CircularILoader from "@/common/components/circular-loader/circular-loader.component";
+import { ChevronDown, ChevronUp, ThumbsDown, ThumbsUp } from "lucide-react";
+import { useState } from "react";
+
+function CitationItem({ citation }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <p className="text-sm font-medium text-white">
+            {citation.document}
+            {citation.page && (
+              <span className="ml-2 text-xs text-white/70">
+                Page {citation.page}
+              </span>
+            )}
+          </p>
+          {citation.section && (
+            <p className="text-xs text-white/60">{citation.section}</p>
+          )}
+        </div>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="ml-2 rounded p-1 hover:bg-white/10"
+        >
+          {isExpanded ? (
+            <ChevronUp className="h-4 w-4 text-white/70" />
+          ) : (
+            <ChevronDown className="h-4 w-4 text-white/70" />
+          )}
+        </button>
+      </div>
+      {isExpanded && citation.snippet && (
+        <div className="mt-2 border-t border-white/10 pt-2">
+          <p className="text-sm text-white/80">{citation.snippet}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function WorkspaceMessages({
   messages,
@@ -11,133 +51,107 @@ export default function WorkspaceMessages({
   messagesEndRef,
 }) {
   return (
-    <div className="px-3 py-4 sm:px-4 sm:py-6">
-      <div className="mx-auto max-w-3xl">
-        {messages.length === 0 && !ask.isLoading && !hasDocuments && (
-          <div className="flex flex-col items-center justify-center py-8 text-center sm:py-12 md:py-16">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-amber-400/10 ring-1 ring-amber-400/30 sm:mb-6 sm:h-20 sm:w-20 sm:rounded-2xl">
-              <FileText className="h-7 w-7 text-amber-400 sm:h-10 sm:w-10" />
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto px-3 py-4 sm:px-4 sm:py-6">
+        {messages.length === 0 ? (
+          <div className="flex h-full items-center justify-center">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-white sm:text-2xl">
+                {hasDocuments
+                  ? "Ready to answer your questions"
+                  : "Upload documents to get started"}
+              </h2>
+              <p className="mt-2 text-sm text-white/70 sm:text-base">
+                {hasDocuments
+                  ? "Ask me anything about your uploaded documents."
+                  : "Upload PDF or DOCX files to begin chatting with your documents."}
+              </p>
             </div>
-            <h2 className="text-xl font-semibold text-white sm:text-2xl">
-              Your compliance assistant awaits
-            </h2>
-            <p className="mt-2 max-w-md text-sm text-white/80 sm:mt-3 sm:text-base">
-              Upload policies, contracts, or HR documents below. Then ask
-              questions in plain language and get answers with page-level
-              citations.
-            </p>
-            <div className="mt-6 grid gap-2 text-left sm:mt-8 sm:grid-cols-2 sm:gap-3">
-              {[
-                "What is our PTO policy?",
-                "Find the termination clause",
-                "Summarize the NDA terms",
-                "What are the data retention rules?",
-              ].map((q, i) => (
+          </div>
+        ) : (
+          <div className="space-y-4 sm:space-y-6">
+            {messages.map((message, index) => (
+              <div key={index} className="space-y-3">
                 <div
-                  key={i}
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs text-white/70 sm:rounded-xl sm:px-4 sm:py-3 sm:text-sm"
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
-                  <span className="text-amber-400/80">Example:</span> {q}
+                  <div
+                    className={`max-w-[85%] rounded-lg px-4 py-3 sm:max-w-[75%] ${
+                      message.role === "user"
+                        ? "bg-amber-400 text-black"
+                        : message.error
+                        ? "bg-red-500/20 text-red-200"
+                        : "bg-white/10 text-white"
+                    }`}
+                  >
+                    <p className="text-sm leading-relaxed sm:text-base">
+                      {message.content}
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
-            <p className="mt-6 flex items-center justify-center gap-2 text-xs text-white/60 sm:mt-8 sm:text-sm">
-              <Paperclip className="h-4 w-4" />
-              Use the attachment icon in the input to upload your first file
-            </p>
-          </div>
-        )}
 
-        {messages.length === 0 && !ask.isLoading && hasDocuments && (
-          <div className="flex flex-col items-center justify-center py-12 text-center sm:py-20 md:py-24">
-            <p className="text-base font-medium text-white sm:text-lg">
-              Ask a question about your documents
-            </p>
-            <p className="mt-1.5 text-xs text-white/90 sm:mt-2 sm:text-sm">
-              Answers are generated only from your uploaded files.
-            </p>
-          </div>
-        )}
-
-        {messages.map((msg, idx) => (
-          <div key={idx} className="mb-4 sm:mb-6">
-            {msg.role === "user" && (
-              <div className="flex justify-end">
-                <div className="max-w-[90%] rounded-xl bg-white/10 px-3 py-2.5 sm:max-w-[85%] sm:rounded-2xl sm:px-4 sm:py-3">
-                  <p className="text-xs text-white sm:text-sm">{msg.content}</p>
-                </div>
-              </div>
-            )}
-            {msg.role === "assistant" && (
-              <div className="flex justify-start">
-                <div className="max-w-[90%] rounded-xl bg-white/5 px-3 py-2.5 sm:max-w-[85%] sm:rounded-2xl sm:px-4 sm:py-3">
-                  <p className="whitespace-pre-wrap text-xs text-white/90 sm:text-sm">
-                    {msg.content}
-                  </p>
-                  {!msg.error && (
-                    <div className="mt-3 flex gap-1">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleFeedback(
-                            1,
-                            messages[idx - 1]?.content,
-                            msg.content,
-                          )
-                        }
-                        className="rounded p-1.5 text-white/70 hover:bg-amber-400/20 hover:text-amber-400"
-                        title="Helpful"
-                      >
-                        <ThumbsUp className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleFeedback(
-                            -1,
-                            messages[idx - 1]?.content,
-                            msg.content,
-                          )
-                        }
-                        className="rounded p-1.5 text-white/70 hover:bg-red-500/20 hover:text-red-400"
-                        title="Not helpful"
-                      >
-                        <ThumbsDown className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
-                  {msg.citations?.length > 0 && (
-                    <div className="mt-4 space-y-2 border-t border-white/10 pt-4">
-                      <p className="text-xs font-medium text-amber-400">
-                        Sources used
-                      </p>
+                {message.role === "assistant" && message.citations && (
+                  <div className="ml-0 space-y-2 sm:ml-4">
+                    {message.citations.length > 0 && (
                       <div className="space-y-2">
-                        {msg.citations.map((c, i) => (
+                        <p className="text-xs font-medium text-white/70 sm:text-sm">
+                          Sources:
+                        </p>
+                        {message.citations.map((citation, citationIndex) => (
                           <CitationItem
-                            key={i}
-                            document={c.document}
-                            page={c.page}
-                            snippet={c.snippet || c.chunk_preview}
+                            key={citationIndex}
+                            citation={citation}
                           />
                         ))}
                       </div>
-                    </div>
-                  )}
+                    )}
+
+                    {!message.error && (
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-white/50">Was this helpful?</p>
+                        <button
+                          onClick={() =>
+                            handleFeedback(
+                              "positive",
+                              messages[index - 1]?.content,
+                              message.content
+                            )
+                          }
+                          className="rounded p-1 hover:bg-white/10"
+                        >
+                          <ThumbsUp className="h-3 w-3 text-white/50 hover:text-green-400" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleFeedback(
+                              "negative",
+                              messages[index - 1]?.content,
+                              message.content
+                            )
+                          }
+                          className="rounded p-1 hover:bg-white/10"
+                        >
+                          <ThumbsDown className="h-3 w-3 text-white/50 hover:text-red-400" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {ask.isLoading && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-2 rounded-lg bg-white/10 px-4 py-3 text-white">
+                  <CircularILoader />
+                  <span className="text-sm">Thinking...</span>
                 </div>
               </div>
             )}
           </div>
-        ))}
-
-        {ask.isLoading && (
-          <div className="flex items-center gap-2 rounded-2xl bg-white/5 px-4 py-3">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
-            <span className="text-sm text-white/90">
-              Searching your documents...
-            </span>
-          </div>
         )}
-
         <div ref={messagesEndRef} />
       </div>
     </div>
