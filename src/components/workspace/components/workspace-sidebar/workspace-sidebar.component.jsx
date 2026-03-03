@@ -110,7 +110,7 @@ export default function WorkspaceSidebar({
                     </div>
                     <div className="min-w-0 flex-1">
                       <p
-                        className="text-xs whitespace-nowrap font-medium text-white leading-tight mb-1"
+                        className="text-xs font-medium text-white leading-tight mb-1 truncate max-w-[150px]"
                         title={doc.filename}
                       >
                         {doc.filename}
