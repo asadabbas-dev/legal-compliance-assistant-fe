@@ -1,15 +1,4 @@
-// #region agent log
-console.log('🔍 DEBUG_DOCS_1: Documents slice loading', {location:'documents.slice.js:1', timestamp:Date.now()});
-if (typeof window !== 'undefined') { window.DEBUG_LOGS = window.DEBUG_LOGS || []; window.DEBUG_LOGS.push('DOCS_1: Documents slice loading'); }
-// #endregion
-
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-// #region agent log
-console.log('🔍 DEBUG_DOCS_2: Before service import', {location:'documents.slice.js:7', timestamp:Date.now()});
-if (typeof window !== 'undefined') { window.DEBUG_LOGS = window.DEBUG_LOGS || []; window.DEBUG_LOGS.push('DOCS_2: Before service import'); }
-// #endregion
-
 import documentsIsolatedService from "./documents-isolated.service";
 
 const generalState = {

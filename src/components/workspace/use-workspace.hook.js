@@ -1,25 +1,8 @@
 "use client";
 
-// #region agent log
-console.log('🔍 DEBUG_HOOK_1: Workspace hook loading', {location:'use-workspace.hook.js:3', timestamp:Date.now()});
-if (typeof window !== 'undefined') { window.DEBUG_LOGS = window.DEBUG_LOGS || []; window.DEBUG_LOGS.push('HOOK_1: Workspace hook loading'); }
-// #endregion
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-// #region agent log
-console.log('🔍 DEBUG_HOOK_2: Before access-token import', {location:'use-workspace.hook.js:10', timestamp:Date.now()});
-if (typeof window !== 'undefined') { window.DEBUG_LOGS = window.DEBUG_LOGS || []; window.DEBUG_LOGS.push('HOOK_2: Before access-token import'); }
-// #endregion
-
 import { getAccessToken } from "@/common/utils/access-token.util";
-
-// #region agent log
-console.log('🔍 DEBUG_HOOK_3: Before documents slice import', {location:'use-workspace.hook.js:14', timestamp:Date.now()});
-if (typeof window !== 'undefined') { window.DEBUG_LOGS = window.DEBUG_LOGS || []; window.DEBUG_LOGS.push('HOOK_3: Before documents slice import'); }
-// #endregion
-
 import { fetchDocuments, uploadPdf } from "@/provider/features/documents/documents.slice";
 // import { askQuestion, submitFeedback } from "@/provider/features/chat/chat.slice"; // Temporarily disabled
 
@@ -51,8 +34,9 @@ export default function useWorkspace() {
 
   // Effects
   useEffect(() => {
-    initializeSession();
-  }, [initializeSession]);
+    // Load documents once on mount
+    dispatch(fetchDocuments({ successCallBack: () => {} }));
+  }, [dispatch]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -70,10 +54,6 @@ export default function useWorkspace() {
   const loadDocuments = useCallback(() => {
     dispatch(fetchDocuments({ successCallBack: () => {} }));
   }, [dispatch]);
-
-  const initializeSession = useCallback(() => {
-    loadDocuments();
-  }, [loadDocuments]);
 
   function handleFileSelect(e) {
     const file = e.target.files?.[0];

@@ -1,8 +1,3 @@
-// #region agent log
-console.log('🔍 DEBUG_SERVICE_1: Isolated service loading', {location:'documents-isolated.service.js:1', timestamp:Date.now()});
-if (typeof window !== 'undefined') { window.DEBUG_LOGS = window.DEBUG_LOGS || []; window.DEBUG_LOGS.push('SERVICE_1: Isolated service loading'); }
-// #endregion
-
 import axios from "axios";
 
 /**
