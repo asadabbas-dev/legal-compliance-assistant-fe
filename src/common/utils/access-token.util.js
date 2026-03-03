@@ -1,5 +1,10 @@
 "use client";
 
+// #region agent log
+console.log('🔍 DEBUG_TOKEN_1: Access token util loading', {location:'access-token.util.js:3', timestamp:Date.now()});
+if (typeof window !== 'undefined') { window.DEBUG_LOGS = window.DEBUG_LOGS || []; window.DEBUG_LOGS.push('TOKEN_1: Access token util loading'); }
+// #endregion
+
 import { isJwtExpired } from "jwt-check-expiration";
 // import authService from "@/provider/features/auth/auth.service"; // REMOVED: Causes circular dependency
 import { getUser } from "./users.util";
