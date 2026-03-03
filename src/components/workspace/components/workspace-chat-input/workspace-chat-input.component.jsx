@@ -39,9 +39,7 @@ export default function WorkspaceChatInput({
               text={upload.isLoading ? "Uploading..." : "Upload"}
               size="sm"
               variant="primary"
-              startIcon={
-                upload.isLoading ? <CircularILoader /> : undefined
-              }
+              startIcon={upload.isLoading ? <CircularILoader /> : undefined}
             />
             <button
               onClick={handleClearFile}
@@ -54,10 +52,10 @@ export default function WorkspaceChatInput({
         </div>
       )}
 
-      {/* Chat Input */}
-      <form onSubmit={handleFormSubmit} className="space-y-3">
+      {/* Chat Input with Inline Icons */}
+      <form onSubmit={handleFormSubmit}>
         <div
-          className="relative"
+          className="relative mx-auto max-w-3xl"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDropFile}
@@ -67,57 +65,67 @@ export default function WorkspaceChatInput({
             onChange={(e) => setQuestion(e.target.value)}
             placeholder={
               hasDocuments
-                ? "Ask a question about your documents..."
-                : "Upload documents first to start chatting..."
+                ? "Ask a question about your document"
+                : "Upload documents first to start conversation"
             }
             disabled={!hasDocuments || ask.isLoading || upload.isLoading}
-            rows={3}
-            className="w-full resize-none rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-white/50 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/20 disabled:cursor-not-allowed disabled:opacity-50"
+            rows={1}
+            className="w-full resize-none rounded-lg border border-white/30 bg-white/10 px-4 py-3 pr-20 text-white placeholder-white/60 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-50 min-h-[48px] font-medium"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleFormSubmit(e);
               }
             }}
+            style={{
+              height: "auto",
+              minHeight: "48px",
+              maxHeight: "120px",
+            }}
+            onInput={(e) => {
+              e.target.style.height = "auto";
+              e.target.style.height =
+                Math.min(e.target.scrollHeight, 120) + "px";
+            }}
           />
+
+          {/* Inline Icons */}
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            <button
+              type="button"
+              onClick={handleUploadClick}
+              disabled={upload.isLoading}
+              className="p-2 rounded-md hover:bg-white/10 transition-colors disabled:opacity-50"
+              title="Upload file"
+            >
+              <Paperclip className="h-4 w-4 text-white/80 hover:text-amber-400" />
+            </button>
+
+            <button
+              type="submit"
+              disabled={
+                !hasDocuments ||
+                !question.trim() ||
+                ask.isLoading ||
+                upload.isLoading
+              }
+              className="p-2 rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Send message"
+            >
+              {ask.isLoading ? (
+                <CircularILoader />
+              ) : (
+                <Send className="h-4 w-4 text-black" />
+              )}
+            </button>
+          </div>
+
           <input
             ref={fileInputRef}
             type="file"
             accept=".pdf,.docx"
             onChange={handleFileSelect}
             className="hidden"
-          />
-        </div>
-
-        <div className="flex items-center justify-between gap-3">
-          <CustomButton
-            type="button"
-            onClick={handleUploadClick}
-            disabled={upload.isLoading}
-            text="Upload File"
-            size="sm"
-            variant="secondary"
-            startIcon={<Paperclip className="h-4 w-4" />}
-          />
-
-          <CustomButton
-            type="submit"
-            disabled={
-              !hasDocuments ||
-              !question.trim() ||
-              ask.isLoading ||
-              upload.isLoading
-            }
-            text={ask.isLoading ? "Asking..." : "Send"}
-            size="sm"
-            variant="primary"
-            endIcon={
-              ask.isLoading ? (
-                <CircularILoader />
-              ) : (
-                <Send className="h-4 w-4" />
-              )
-            }
           />
         </div>
       </form>

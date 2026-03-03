@@ -6,7 +6,7 @@ export default function CircularILoader() {
   return (
     <div className="flex items-center justify-center">
       <Box sx={{ display: "flex" }}>
-        <CircularProgress />
+        <CircularProgress size={10} />
       </Box>
     </div>
   );

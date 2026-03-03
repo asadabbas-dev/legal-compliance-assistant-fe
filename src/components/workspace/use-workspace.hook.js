@@ -37,16 +37,33 @@ export default function useWorkspace() {
     dispatch(fetchDocuments({ successCallBack: () => {} }));
   }, [dispatch]);
 
+  // Optional: Smart polling - only poll when there are processing documents
+  // Uncomment below if you want automatic status updates
+  /*
+  useEffect(() => {
+    const hasProcessingDocs = documents.some(doc => doc.status === 'processing');
+    
+    if (!hasProcessingDocs) {
+      return; // No polling needed
+    }
+    
+    const pollInterval = setInterval(() => {
+      dispatch(fetchDocuments({ successCallBack: () => {} }));
+    }, 15000); // Poll every 15 seconds only when needed
+    
+    return () => clearInterval(pollInterval);
+  }, [documents, dispatch]);
+  */
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const hasToken =
-      Boolean(window.localStorage.getItem("rag_access_token")) ||
-      Boolean(getAccessToken());
-    setIsSignedIn(hasToken);
+    // Only consider actual user tokens, not anonymous tokens
+    const hasUserToken = Boolean(getAccessToken());
+    setIsSignedIn(hasUserToken);
   }, []);
 
   // Functions
@@ -90,6 +107,10 @@ export default function useWorkspace() {
   function handleNewChat() {
     setMessages([]);
     setQuestion("");
+    // Scroll to top of messages
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   async function handleAsk(q) {
@@ -164,6 +185,17 @@ export default function useWorkspace() {
     e.currentTarget.classList.remove("ring-2", "ring-amber-400");
   }
 
+  function handleDeleteDocument(documentId) {
+    // TODO: Implement document deletion API call
+    console.log("Delete document:", documentId);
+    // For now, just reload documents to refresh the list
+    loadDocuments();
+  }
+
+  function handleRefreshDocuments() {
+    loadDocuments();
+  }
+
   return {
     // State/refs
     fileInputRef,
@@ -193,5 +225,7 @@ export default function useWorkspace() {
     handleDropFile,
     handleDragOver,
     handleDragLeave,
+    handleDeleteDocument,
+    handleRefreshDocuments,
   };
 }

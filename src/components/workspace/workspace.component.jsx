@@ -35,6 +35,8 @@ export default function Workspace() {
     handleDragOver,
     handleDragLeave,
     handleSelectChat,
+    handleDeleteDocument,
+    handleRefreshDocuments,
   } = useWorkspace();
 
   return (
@@ -60,6 +62,8 @@ export default function Workspace() {
         chats={chats}
         currentChatId={currentChatId}
         handleSelectChat={handleSelectChat}
+        handleDeleteDocument={handleDeleteDocument}
+        handleRefreshDocuments={handleRefreshDocuments}
       />
 
       <main className="flex flex-1 flex-col min-h-0 overflow-hidden">
