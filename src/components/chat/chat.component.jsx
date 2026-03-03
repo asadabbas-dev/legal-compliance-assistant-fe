@@ -54,9 +54,6 @@ export default function Chat() {
                   <p className="typography-body text-text-tertiary">
                     Ask a question about your documents
                   </p>
-                  <p className="typography-helper">
-                    e.g. What is the vacation policy?
-                  </p>
                 </div>
               ) : (
                 <div className="section-spacing mx-auto max-w-3xl">
@@ -75,20 +72,21 @@ export default function Chat() {
                         <p className="typography-body whitespace-pre-wrap">
                           {msg.content}
                         </p>
-                        {msg.role === "assistant" && msg.citations?.length > 0 && (
-                          <div className="form-spacing border-t border-neutral-200 pt-3">
-                            <p className="typography-helper font-medium">
-                              Sources
-                            </p>
-                            <div className="flex flex-wrap gap-1.5">
-                              {msg.citations.map((c, i) => (
-                                <span key={i} className="badge badge-info">
-                                  {c.document} (p. {c.page})
-                                </span>
-                              ))}
+                        {msg.role === "assistant" &&
+                          msg.citations?.length > 0 && (
+                            <div className="form-spacing border-t border-neutral-200 pt-3">
+                              <p className="typography-helper font-medium">
+                                Sources
+                              </p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {msg.citations.map((c, i) => (
+                                  <span key={i} className="badge badge-info">
+                                    {c.document} (p. {c.page})
+                                  </span>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
                         {msg.role === "assistant" && !msg.error && (
                           <div className="form-spacing flex gap-1 pt-0">
                             <button
@@ -97,7 +95,11 @@ export default function Chat() {
                               className="rounded p-1 text-text-tertiary hover:bg-neutral-200 hover:text-success-600"
                               title="Helpful"
                             >
-                              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                              <svg
+                                className="h-4 w-4"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
                                 <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 2 2 0 00-2 2v4H3.5a2 2 0 00-1.967 2.608l1.2 6A2 2 0 005.518 16H6v-5.667z" />
                               </svg>
                             </button>
@@ -107,7 +109,11 @@ export default function Chat() {
                               className="rounded p-1 text-text-tertiary hover:bg-neutral-200 hover:text-danger-600"
                               title="Not helpful"
                             >
-                              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                              <svg
+                                className="h-4 w-4"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
                                 <path d="M18 9.5a1.5 1.5 0 11-3 0v6a1.5 1.5 0 013 0v-6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 2 2 0 002-2V4h2.5a2 2 0 011.967 2.608l-1.2 6A2 2 0 0014.482 18H14v-5.333z" />
                               </svg>
                             </button>
@@ -120,7 +126,9 @@ export default function Chat() {
                     <div className="flex justify-start">
                       <div className="table-cell flex items-center gap-2 rounded-xl bg-neutral-100">
                         <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
-                        <span className="typography-body text-text-tertiary">Searching...</span>
+                        <span className="typography-body text-text-tertiary">
+                          Searching...
+                        </span>
                       </div>
                     </div>
                   )}
@@ -138,7 +146,7 @@ export default function Chat() {
                     name="question"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Ask a question..."
+                    placeholder="Ask a question about your documents"
                     disabled={isLoading}
                     className="w-full"
                   />

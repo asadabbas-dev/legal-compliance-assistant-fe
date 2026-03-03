@@ -12,6 +12,7 @@ const generalState = {
 const initialState = {
   upload: generalState,
   list: generalState,
+  delete: generalState,
 };
 
 export const uploadPdf = createAsyncThunk(
@@ -40,6 +41,22 @@ export const fetchDocuments = createAsyncThunk(
       if (response.success) {
         successCallBack?.(response);
         return response;
+      }
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error?.response?.data || { message: error.message });
+    }
+  }
+);
+
+export const deleteDocument = createAsyncThunk(
+  "documents/delete",
+  async ({ documentId, successCallBack }, thunkAPI) => {
+    try {
+      const response = await documentsService.deleteDocument(documentId);
+      if (response.success) {
+        successCallBack?.(response);
+        return { documentId, ...response };
       }
       return thunkAPI.rejectWithValue(response);
     } catch (error) {
@@ -101,6 +118,30 @@ export const documentsSlice = createSlice({
         state.list.isLoading = false;
         state.list.isError = true;
         state.list.data = null;
+      })
+      // Delete document
+      .addCase(deleteDocument.pending, (state) => {
+        state.delete.isLoading = true;
+        state.delete.isError = false;
+        state.delete.isSuccess = false;
+        state.delete.error = null;
+      })
+      .addCase(deleteDocument.fulfilled, (state, action) => {
+        state.delete.isLoading = false;
+        state.delete.isSuccess = true;
+        state.delete.data = action.payload;
+        
+        // Remove the deleted document from the list
+        if (state.list.data?.documents) {
+          state.list.data.documents = state.list.data.documents.filter(
+            doc => doc.id !== action.payload.documentId
+          );
+        }
+      })
+      .addCase(deleteDocument.rejected, (state, action) => {
+        state.delete.isLoading = false;
+        state.delete.isError = true;
+        state.delete.error = action.payload;
       });
   },
 });

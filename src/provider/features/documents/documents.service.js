@@ -13,9 +13,15 @@ const getDocuments = async () => {
   return response.data;
 };
 
+const deleteDocument = async (documentId) => {
+  const response = await api().delete(`${ENDPOINT.rag.documents.path}/${documentId}`);
+  return response.data;
+};
+
 const documentsService = {
   uploadPdf,
   getDocuments,
+  deleteDocument,
 };
 
 export default documentsService;

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAccessToken } from "@/common/utils/access-token.util";
-import { fetchDocuments, uploadPdf } from "@/provider/features/documents/documents.slice";
+import { fetchDocuments, uploadPdf, deleteDocument } from "@/provider/features/documents/documents.slice";
 import { askQuestion, submitFeedback } from "@/provider/features/chat/chat.slice";
 
 function isAllowedUploadFile(file) {
@@ -186,10 +186,13 @@ export default function useWorkspace() {
   }
 
   function handleDeleteDocument(documentId) {
-    // TODO: Implement document deletion API call
-    console.log("Delete document:", documentId);
-    // For now, just reload documents to refresh the list
-    loadDocuments();
+    dispatch(deleteDocument({
+      documentId,
+      successCallBack: () => {
+        // Document will be automatically removed from the list by the reducer
+        // No need to reload documents
+      }
+    }));
   }
 
   function handleRefreshDocuments() {

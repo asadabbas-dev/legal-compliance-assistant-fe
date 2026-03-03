@@ -63,12 +63,8 @@ export default function WorkspaceChatInput({
           <textarea
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            placeholder={
-              hasDocuments
-                ? "Ask a question about your document"
-                : "Upload documents first to start conversation"
-            }
-            // disabled={!hasDocuments || ask.isLoading || upload.isLoading}
+            placeholder="Ask a question about your document"
+            disabled={!hasDocuments || ask.isLoading || upload.isLoading}
             rows={1}
             className="w-full resize-none rounded-lg border-0 bg-white/10 px-4 py-3 pr-20 text-white placeholder-white/60 disabled:cursor-not-allowed disabled:opacity-50 min-h-[48px] font-medium 
             outline-none focus:outline-none focus:ring-0 focus:ring-transparent focus:border-0 focus:shadow-none"
