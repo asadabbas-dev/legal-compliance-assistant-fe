@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import documentsIsolatedService from "./documents-isolated.service";
+import documentsService from "./documents.service";
 
 const generalState = {
   isLoading: false,
@@ -20,7 +20,7 @@ export const uploadPdf = createAsyncThunk(
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await documentsIsolatedService.uploadPdf(formData);
+      const response = await documentsService.uploadPdf(formData);
       if (response.success) {
         successCallBack?.(response);
         return response;
@@ -36,7 +36,7 @@ export const fetchDocuments = createAsyncThunk(
   "documents/fetch",
   async ({ successCallBack }, thunkAPI) => {
     try {
-      const response = await documentsIsolatedService.getDocuments();
+      const response = await documentsService.getDocuments();
       if (response.success) {
         successCallBack?.(response);
         return response;
@@ -72,6 +72,11 @@ export const documentsSlice = createSlice({
         state.upload.isLoading = false;
         state.upload.isSuccess = true;
         state.upload.data = action.payload;
+        
+        // Store anonymous token if provided (for guest users)
+        if (action.payload.anonymous_token && typeof window !== "undefined") {
+          window.localStorage.setItem("rag_access_token", action.payload.anonymous_token);
+        }
       })
       .addCase(uploadPdf.rejected, (state, action) => {
         state.upload.message = action.payload?.message || "Upload failed";
