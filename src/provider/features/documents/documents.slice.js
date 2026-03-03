@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import documentsService from "./documents.service";
+import documentsIsolatedService from "./documents-isolated.service";
 
 const generalState = {
   isLoading: false,
@@ -20,7 +20,7 @@ export const uploadPdf = createAsyncThunk(
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await documentsService.uploadPdf(formData);
+      const response = await documentsIsolatedService.uploadPdf(formData);
       if (response.success) {
         successCallBack?.(response);
         return response;
@@ -36,7 +36,7 @@ export const fetchDocuments = createAsyncThunk(
   "documents/fetch",
   async ({ successCallBack }, thunkAPI) => {
     try {
-      const response = await documentsService.getDocuments();
+      const response = await documentsIsolatedService.getDocuments();
       if (response.success) {
         successCallBack?.(response);
         return response;

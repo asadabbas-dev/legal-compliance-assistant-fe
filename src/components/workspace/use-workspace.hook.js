@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAccessToken } from "@/common/utils/access-token.util";
 import { fetchDocuments, uploadPdf } from "@/provider/features/documents/documents.slice";
-import { askQuestion, submitFeedback } from "@/provider/features/chat/chat.slice";
+// import { askQuestion, submitFeedback } from "@/provider/features/chat/chat.slice"; // Temporarily disabled
 
 function isAllowedUploadFile(file) {
   const allowedTypes = [
@@ -26,7 +26,8 @@ export default function useWorkspace() {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   const { upload, list } = useSelector((state) => state.documents);
-  const { ask } = useSelector((state) => state.chat);
+  // const { ask } = useSelector((state) => state.chat); // Temporarily disabled
+  const ask = { isLoading: false }; // Placeholder
 
   const documents = list?.data?.documents || [];
   const hasDocuments = documents.length > 0;
@@ -96,50 +97,25 @@ export default function useWorkspace() {
   }
 
   async function handleAsk(q) {
+    // Temporarily disabled - just show a placeholder message
     const text = (q || question).trim();
     if (!text || !hasDocuments) return;
 
     setQuestion("");
-    setMessages((prev) => [...prev, { role: "user", content: text, citations: [] }]);
-
-    const response = await dispatch(
-      askQuestion({
-        question: text,
-        successCallBack: (data) => {
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            { role: "user", content: text, citations: [] },
-            {
-              role: "assistant",
-              content: data.answer,
-              citations: data.citations || [],
-            },
-          ]);
-        },
-      }),
-    );
-
-    if (response?.meta?.requestStatus === "rejected") {
-      setMessages((prev) => [
-        ...prev.slice(0, -1),
-        {
-          role: "assistant",
-          content: "Sorry, I couldn't process your question. Please try again.",
-          citations: [],
-          error: true,
-        },
-      ]);
-    }
+    setMessages((prev) => [
+      ...prev, 
+      { role: "user", content: text, citations: [] },
+      { 
+        role: "assistant", 
+        content: "Chat functionality temporarily disabled while fixing production issues.", 
+        citations: [] 
+      }
+    ]);
   }
 
   function handleFeedback(rating, lastUserMsg, lastAssistantMsg) {
-    if (!lastUserMsg || !lastAssistantMsg) return;
-    dispatch(
-      submitFeedback({
-        payload: { question: lastUserMsg, answer: lastAssistantMsg, rating },
-        successCallBack: () => {},
-      }),
-    );
+    // Temporarily disabled
+    console.log("Feedback temporarily disabled:", { rating, lastUserMsg, lastAssistantMsg });
   }
 
   function handleFormSubmit(e) {
