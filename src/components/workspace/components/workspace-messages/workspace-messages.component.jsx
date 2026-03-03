@@ -143,13 +143,19 @@ export default function WorkspaceMessages({
                   <div
                     className={`max-w-[85%] rounded-lg px-4 py-3 sm:max-w-[75%] ${
                       message.role === "user"
-                        ? "bg-amber-400 text-black"
+                        ? "bg-amber-400"
                         : message.error
-                          ? "bg-red-500/20 text-red-200"
-                          : "bg-white/10 text-white"
+                          ? "bg-red-500/20"
+                          : "bg-white/10"
                     }`}
                   >
-                    <p className="text-sm text-white/80 leading-relaxed sm:text-base">
+                    <p className={`text-sm leading-relaxed sm:text-base ${
+                      message.role === "user"
+                        ? "text-black font-medium"
+                        : message.error
+                          ? "text-red-200"
+                          : "text-white"
+                    }`}>
                       {message.content}
                     </p>
                   </div>
