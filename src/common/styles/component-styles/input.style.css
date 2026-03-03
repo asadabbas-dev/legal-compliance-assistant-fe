@@ -32,16 +32,6 @@
   height: 40px !important;
 }
 
-.Mui-focused .MuiOutlinedInput-notchedOutline,
-textarea:focus {
-  border-color: var(--focus-input) !important;
-  border-width: 1px !important;
-}
-
-textarea:focus {
-  outline: none !important;
-}
-
 .MuiAutocomplete-root .MuiInputBase-root {
   padding: 1px 10px;
 }
