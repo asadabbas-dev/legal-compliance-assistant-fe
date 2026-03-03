@@ -20,6 +20,8 @@ export default function Workspace() {
     ask,
     documents,
     hasDocuments,
+    currentChatId,
+    chats,
     setQuestion,
     setMobileSidebarOpen,
     handleFileSelect,
@@ -32,6 +34,7 @@ export default function Workspace() {
     handleDropFile,
     handleDragOver,
     handleDragLeave,
+    handleSelectChat,
   } = useWorkspace();
 
   return (
@@ -54,6 +57,9 @@ export default function Workspace() {
         isSignedIn={isSignedIn}
         list={list}
         documents={documents}
+        chats={chats}
+        currentChatId={currentChatId}
+        handleSelectChat={handleSelectChat}
       />
 
       <main className="flex flex-1 flex-col min-h-0 overflow-hidden">

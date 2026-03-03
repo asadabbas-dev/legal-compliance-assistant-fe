@@ -57,7 +57,7 @@ export default function WorkspaceHeader() {
             Home
           </Link>
           <Link
-            href="/login"
+            href="/"
             className="rounded-lg bg-amber-400 px-3 py-1.5 text-xs font-semibold !text-black transition-colors hover:bg-amber-300 sm:px-4 sm:py-2 sm:text-sm"
           >
             Sign in

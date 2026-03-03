@@ -4,7 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAccessToken } from "@/common/utils/access-token.util";
 import { fetchDocuments, uploadPdf } from "@/provider/features/documents/documents.slice";
-import { askQuestion, submitFeedback } from "@/provider/features/chat/chat.slice";
+import { 
+  askQuestion, 
+  submitFeedback, 
+  createChatSession, 
+  fetchChats, 
+  fetchChatHistory, 
+  sendChatMessage 
+} from "@/provider/features/chat/chat.slice";
 
 function isAllowedUploadFile(file) {
   const allowedTypes = [
@@ -24,9 +31,11 @@ export default function useWorkspace() {
   const [messages, setMessages] = useState([]);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [currentChatId, setCurrentChatId] = useState(null);
+  const [chats, setChats] = useState([]);
 
   const { upload, list } = useSelector((state) => state.documents);
-  const { ask } = useSelector((state) => state.chat);
+  const { ask, create, history, message } = useSelector((state) => state.chat);
 
   const documents = list?.data?.documents || [];
   const hasDocuments = documents.length > 0;
@@ -34,7 +43,39 @@ export default function useWorkspace() {
   // useEffect
   useEffect(() => {
     loadDocuments();
+    loadChats();
   }, []);
+
+  useEffect(() => {
+    if (create.isSuccess && create.data?.chat?.id) {
+      setCurrentChatId(create.data.chat.id);
+      setMessages([]);
+      loadChats(); // Refresh chat list
+    }
+  }, [create.isSuccess, create.data]);
+
+  useEffect(() => {
+    if (history.isSuccess && history.data?.messages) {
+      const chatMessages = history.data.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+        citations: msg.metadata_json?.citations || []
+      }));
+      setMessages(chatMessages);
+    }
+  }, [history.isSuccess, history.data]);
+
+  useEffect(() => {
+    if (message.isSuccess && message.data) {
+      // Chat message sent successfully, reload chat history
+      if (currentChatId) {
+        dispatch(fetchChatHistory({ 
+          chatId: currentChatId, 
+          successCallBack: () => {} 
+        }));
+      }
+    }
+  }, [message.isSuccess, message.data, currentChatId, dispatch]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,6 +92,14 @@ export default function useWorkspace() {
   // functions
   function loadDocuments() {
     dispatch(fetchDocuments({ successCallBack: () => {} }));
+  }
+
+  function loadChats() {
+    dispatch(fetchChats({ 
+      successCallBack: (data) => {
+        setChats(data.chats || []);
+      } 
+    }));
   }
 
   function handleFileSelect(e) {
@@ -81,9 +130,19 @@ export default function useWorkspace() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  function handleNewChat() {
-    setMessages([]);
-    setQuestion("");
+  async function handleNewChat() {
+    if (isSignedIn) {
+      // For authenticated users, create a new chat session
+      await dispatch(createChatSession({ 
+        title: "New chat",
+        successCallBack: () => {} 
+      }));
+    } else {
+      // For guests, just clear local messages
+      setMessages([]);
+      setQuestion("");
+      setCurrentChatId(null);
+    }
   }
 
   async function handleAsk(q) {
@@ -91,35 +150,46 @@ export default function useWorkspace() {
     if (!text || !hasDocuments) return;
 
     setQuestion("");
-    setMessages((prev) => [...prev, { role: "user", content: text, citations: [] }]);
 
-    const response = await dispatch(
-      askQuestion({
-        question: text,
-        successCallBack: (data) => {
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            { role: "user", content: text, citations: [] },
-            {
-              role: "assistant",
-              content: data.answer,
-              citations: data.citations || [],
-            },
-          ]);
-        },
-      }),
-    );
+    if (isSignedIn && currentChatId) {
+      // For authenticated users with active chat, use chat API
+      await dispatch(sendChatMessage({
+        chatId: currentChatId,
+        content: text,
+        successCallBack: () => {}
+      }));
+    } else {
+      // For guests or no active chat, use direct RAG
+      setMessages((prev) => [...prev, { role: "user", content: text, citations: [] }]);
 
-    if (response?.meta?.requestStatus === "rejected") {
-      setMessages((prev) => [
-        ...prev.slice(0, -1),
-        {
-          role: "assistant",
-          content: "Sorry, I couldn't process your question. Please try again.",
-          citations: [],
-          error: true,
-        },
-      ]);
+      const response = await dispatch(
+        askQuestion({
+          question: text,
+          successCallBack: (data) => {
+            setMessages((prev) => [
+              ...prev.slice(0, -1),
+              { role: "user", content: text, citations: [] },
+              {
+                role: "assistant",
+                content: data.answer,
+                citations: data.citations || [],
+              },
+            ]);
+          },
+        }),
+      );
+
+      if (response?.meta?.requestStatus === "rejected") {
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          {
+            role: "assistant",
+            content: "Sorry, I couldn't process your question. Please try again.",
+            citations: [],
+            error: true,
+          },
+        ]);
+      }
     }
   }
 
@@ -158,6 +228,19 @@ export default function useWorkspace() {
     e.currentTarget.classList.remove("ring-2", "ring-amber-400");
   }
 
+  function handleSelectChat(chatId) {
+    if (chatId === currentChatId) return;
+    
+    setCurrentChatId(chatId);
+    setMessages([]);
+    
+    // Load chat history
+    dispatch(fetchChatHistory({
+      chatId,
+      successCallBack: () => {}
+    }));
+  }
+
   return {
     // state/refs
     fileInputRef,
@@ -172,6 +255,8 @@ export default function useWorkspace() {
     ask,
     documents,
     hasDocuments,
+    currentChatId,
+    chats,
     // setters
     setQuestion,
     setMobileSidebarOpen,
@@ -187,5 +272,6 @@ export default function useWorkspace() {
     handleDropFile,
     handleDragOver,
     handleDragLeave,
+    handleSelectChat,
   };
 }
