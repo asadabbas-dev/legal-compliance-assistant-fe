@@ -1,4 +1,3 @@
-import api from "@/common/utils/api";
 import { ENDPOINT } from "@/endpoints";
 
 const getAnonymousToken = async () => {

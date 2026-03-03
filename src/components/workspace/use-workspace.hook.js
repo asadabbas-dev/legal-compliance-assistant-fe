@@ -12,7 +12,6 @@ import {
   fetchChatHistory, 
   sendChatMessage 
 } from "@/provider/features/chat/chat.slice";
-import { fetchAnonymousToken } from "@/provider/features/anonymous/anonymous.slice";
 
 function isAllowedUploadFile(file) {
   const allowedTypes = [
@@ -37,7 +36,6 @@ export default function useWorkspace() {
 
   const { upload, list } = useSelector((state) => state.documents);
   const { ask, create, history, message } = useSelector((state) => state.chat);
-  const { token } = useSelector((state) => state.anonymous);
 
   const documents = list?.data?.documents || [];
   const hasDocuments = documents.length > 0;
@@ -47,23 +45,12 @@ export default function useWorkspace() {
     initializeSession();
   }, [initializeSession]);
 
-  const initializeSession = useCallback(async () => {
-    // Check if user has a token (either authenticated or anonymous)
-    const hasToken = Boolean(window.localStorage.getItem("rag_access_token")) || 
-                     Boolean(getAccessToken());
-    
-    if (!hasToken) {
-      // Get anonymous token for guest users using Redux
-      await dispatch(fetchAnonymousToken({ 
-        successCallBack: () => {
-          console.log("Anonymous token obtained successfully");
-        }
-      }));
-    }
-    
+  const initializeSession = useCallback(() => {
+    // For now, just load documents and chats
+    // Anonymous token will be handled by the upload endpoint when needed
     loadDocuments();
     loadChats();
-  }, [dispatch, loadDocuments, loadChats]);
+  }, [loadDocuments, loadChats]);
 
   useEffect(() => {
     if (create.isSuccess && create.data?.chat?.id) {
@@ -276,7 +263,6 @@ export default function useWorkspace() {
     hasDocuments,
     currentChatId,
     chats,
-    token,
     // setters
     setQuestion,
     setMobileSidebarOpen,
