@@ -2,7 +2,7 @@
 
 import CircularILoader from "@/common/components/circular-loader/circular-loader.component";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
-import { FileText, Plus, X, MessageSquare, User, UserX } from "lucide-react";
+import { FileText, Plus, X, User, UserX } from "lucide-react";
 
 export default function WorkspaceSidebar({
   mobileSidebarOpen,
@@ -11,9 +11,6 @@ export default function WorkspaceSidebar({
   isSignedIn,
   list,
   documents,
-  chats,
-  currentChatId,
-  handleSelectChat,
 }) {
   return (
     <aside
@@ -64,43 +61,7 @@ export default function WorkspaceSidebar({
             )}
           </div>
 
-          {/* Chat History (only for signed in users) */}
-          {isSignedIn && (
-            <div>
-              <h3 className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-white/80 sm:mb-2 sm:text-xs">
-                Recent Chats
-              </h3>
-              <div className="max-h-32 space-y-1 overflow-y-auto sm:max-h-40">
-                {chats.length === 0 ? (
-                  <p className="px-2 py-4 text-sm text-white/80">
-                    No chat history yet. Start a conversation.
-                  </p>
-                ) : (
-                  chats.slice(0, 10).map((chat) => (
-                    <button
-                      key={chat.id}
-                      onClick={() => handleSelectChat(chat.id)}
-                      className={`flex w-full items-start gap-2 rounded-lg px-3 py-2 text-left hover:bg-white/5 ${
-                        currentChatId === chat.id ? "bg-amber-400/10" : ""
-                      }`}
-                    >
-                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-white/10">
-                        <MessageSquare className="h-3 w-3 text-white/70" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm leading-tight text-white">
-                          {chat.title}
-                        </p>
-                        <p className="mt-0.5 text-xs text-white/60">
-                          {new Date(chat.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
-          )}
+          {/* Chat History temporarily disabled */}
 
           {/* Documents */}
           <div>
