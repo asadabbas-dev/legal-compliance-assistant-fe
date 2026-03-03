@@ -149,7 +149,7 @@ export default function WorkspaceMessages({
                           : "bg-white/10 text-white"
                     }`}
                   >
-                    <p className="text-sm leading-relaxed sm:text-base">
+                    <p className="text-sm text-white/80 leading-relaxed sm:text-base">
                       {message.content}
                     </p>
                   </div>

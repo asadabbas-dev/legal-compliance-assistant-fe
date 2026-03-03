@@ -70,7 +70,7 @@ export default function WorkspaceChatInput({
             }
             disabled={!hasDocuments || ask.isLoading || upload.isLoading}
             rows={1}
-            className="w-full resize-none rounded-lg border border-white/30 bg-white/10 px-4 py-3 pr-20 text-white placeholder-white/60 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-50 min-h-[48px] font-medium"
+            className="w-full resize-none rounded-lg border border-white/30 bg-white/10 px-4 py-3 pr-20 text-white placeholder-white/60 disabled:cursor-not-allowed disabled:opacity-50 min-h-[48px] font-medium"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();

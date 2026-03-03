@@ -2,7 +2,15 @@
 
 import CircularILoader from "@/common/components/circular-loader/circular-loader.component";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
-import { FileText, Plus, X, User, UserX, Trash2, RefreshCw } from "lucide-react";
+import {
+  FileText,
+  Plus,
+  X,
+  User,
+  UserX,
+  Trash2,
+  RefreshCw,
+} from "lucide-react";
 
 export default function WorkspaceSidebar({
   mobileSidebarOpen,
@@ -42,7 +50,7 @@ export default function WorkspaceSidebar({
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4">
+      <div className="flex-1 overflow-y-auto p-3">
         <div className="space-y-3 sm:space-y-4">
           {/* User Status */}
           <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2">
@@ -101,7 +109,10 @@ export default function WorkspaceSidebar({
                       <FileText className="h-5 w-5 text-amber-400" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-white leading-tight mb-1" title={doc.filename}>
+                      <p
+                        className="text-xs whitespace-nowrap font-medium text-white leading-tight mb-1"
+                        title={doc.filename}
+                      >
                         {doc.filename}
                       </p>
                       <div className="flex items-center justify-between">
@@ -109,17 +120,23 @@ export default function WorkspaceSidebar({
                           {new Date(doc.created_at).toLocaleDateString()}
                         </p>
                         <div className="flex items-center gap-2">
-                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium flex items-center gap-1 ${
-                            doc.status === 'processing' 
-                              ? 'bg-blue-500/20 text-blue-400' 
-                              : doc.status === 'failed'
-                              ? 'bg-red-500/20 text-red-400'
-                              : 'bg-green-500/20 text-green-400'
-                          }`}>
-                            {doc.status === 'processing' && (
+                          <span
+                            className={`rounded-lg px-2 py-0.5 text-[10px] font-medium flex items-center gap-1 ${
+                              doc.status === "processing"
+                                ? "bg-blue-500/20 text-blue-400"
+                                : doc.status === "failed"
+                                  ? "bg-red-500/20 text-red-400"
+                                  : "bg-green-500/20 text-green-400"
+                            }`}
+                          >
+                            {doc.status === "processing" && (
                               <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
                             )}
-                            {doc.status === 'processing' ? 'Processing...' : doc.status === 'failed' ? 'Failed' : 'Ready'}
+                            {doc.status === "processing"
+                              ? "Processing..."
+                              : doc.status === "failed"
+                                ? "Failed"
+                                : "Ready"}
                           </span>
                           <button
                             onClick={() => handleDeleteDocument?.(doc.id)}
