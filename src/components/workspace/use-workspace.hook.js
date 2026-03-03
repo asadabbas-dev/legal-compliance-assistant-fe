@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAccessToken } from "@/common/utils/access-token.util";
 import { fetchDocuments, uploadPdf } from "@/provider/features/documents/documents.slice";
@@ -12,6 +12,7 @@ import {
   fetchChatHistory, 
   sendChatMessage 
 } from "@/provider/features/chat/chat.slice";
+import { fetchAnonymousToken } from "@/provider/features/anonymous/anonymous.slice";
 
 function isAllowedUploadFile(file) {
   const allowedTypes = [
@@ -36,15 +37,33 @@ export default function useWorkspace() {
 
   const { upload, list } = useSelector((state) => state.documents);
   const { ask, create, history, message } = useSelector((state) => state.chat);
+  const { token } = useSelector((state) => state.anonymous);
 
   const documents = list?.data?.documents || [];
   const hasDocuments = documents.length > 0;
 
   // useEffect
   useEffect(() => {
+    initializeSession();
+  }, [initializeSession]);
+
+  const initializeSession = useCallback(async () => {
+    // Check if user has a token (either authenticated or anonymous)
+    const hasToken = Boolean(window.localStorage.getItem("rag_access_token")) || 
+                     Boolean(getAccessToken());
+    
+    if (!hasToken) {
+      // Get anonymous token for guest users using Redux
+      await dispatch(fetchAnonymousToken({ 
+        successCallBack: () => {
+          console.log("Anonymous token obtained successfully");
+        }
+      }));
+    }
+    
     loadDocuments();
     loadChats();
-  }, []);
+  }, [dispatch, loadDocuments, loadChats]);
 
   useEffect(() => {
     if (create.isSuccess && create.data?.chat?.id) {
@@ -52,7 +71,7 @@ export default function useWorkspace() {
       setMessages([]);
       loadChats(); // Refresh chat list
     }
-  }, [create.isSuccess, create.data]);
+  }, [create.isSuccess, create.data, loadChats]);
 
   useEffect(() => {
     if (history.isSuccess && history.data?.messages) {
@@ -90,17 +109,17 @@ export default function useWorkspace() {
   }, []);
 
   // functions
-  function loadDocuments() {
+  const loadDocuments = useCallback(() => {
     dispatch(fetchDocuments({ successCallBack: () => {} }));
-  }
+  }, [dispatch]);
 
-  function loadChats() {
+  const loadChats = useCallback(() => {
     dispatch(fetchChats({ 
       successCallBack: (data) => {
         setChats(data.chats || []);
       } 
     }));
-  }
+  }, [dispatch]);
 
   function handleFileSelect(e) {
     const file = e.target.files?.[0];
@@ -257,6 +276,7 @@ export default function useWorkspace() {
     hasDocuments,
     currentChatId,
     chats,
+    token,
     // setters
     setQuestion,
     setMobileSidebarOpen,
