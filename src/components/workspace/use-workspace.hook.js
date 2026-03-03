@@ -1,15 +1,21 @@
 "use client";
 
+console.log("🔍 DEBUG: use-workspace.hook.js - Starting import");
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAccessToken } from "@/common/utils/access-token.util";
+console.log("🔍 DEBUG: access-token.util imported");
+
 import { fetchDocuments, uploadPdf } from "@/provider/features/documents/documents.slice";
+console.log("🔍 DEBUG: documents.slice imported");
 // import { 
 //   askQuestion, 
 //   submitFeedback
 // } from "@/provider/features/chat/chat.slice"; // Temporarily disabled
 
 function isAllowedUploadFile(file) {
+  console.log("🔍 DEBUG: isAllowedUploadFile called");
   const allowedTypes = [
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -18,10 +24,15 @@ function isAllowedUploadFile(file) {
 }
 
 export default function useWorkspace() {
+  console.log("🔍 DEBUG: useWorkspace hook starting");
+  
   // stats
   const dispatch = useDispatch();
+  console.log("🔍 DEBUG: useDispatch called");
+  
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  console.log("🔍 DEBUG: useRef hooks initialized");
   const [selectedFile, setSelectedFile] = useState(null);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
@@ -30,7 +41,12 @@ export default function useWorkspace() {
   // const [currentChatId, setCurrentChatId] = useState(null);
   // const [chats, setChats] = useState([]);
 
-  const { upload, list } = useSelector((state) => state.documents);
+  console.log("🔍 DEBUG: About to call useSelector for documents");
+  const { upload, list } = useSelector((state) => {
+    console.log("🔍 DEBUG: useSelector documents callback, state:", state);
+    return state.documents;
+  });
+  console.log("🔍 DEBUG: useSelector documents completed");
   // const { ask } = useSelector((state) => state.chat); // Temporarily disabled
 
   const documents = list?.data?.documents || [];

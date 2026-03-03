@@ -1,6 +1,12 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import documentsService from "./documents.service";
+console.log("🔍 DEBUG: documents.slice.js - Starting import");
 
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+console.log("🔍 DEBUG: @reduxjs/toolkit imported");
+
+import documentsService from "./documents.service";
+console.log("🔍 DEBUG: documentsService imported");
+
+console.log("🔍 DEBUG: Creating generalState");
 const generalState = {
   isLoading: false,
   isSuccess: false,
@@ -8,6 +14,7 @@ const generalState = {
   message: "",
   data: null,
 };
+console.log("🔍 DEBUG: generalState created");
 
 const initialState = {
   upload: generalState,

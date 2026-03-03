@@ -1,7 +1,7 @@
 'use client';
 
 import { isJwtExpired } from 'jwt-check-expiration';
-import authService from '@/provider/features/auth/auth.service';
+// import authService from '@/provider/features/auth/auth.service'; // REMOVED: Causes circular dependency
 import { getUser } from './users.util';
 
 /**
@@ -49,8 +49,10 @@ export const getAccessTokenExpiry = () => {
 export const checkForOldToken = async () => {
   if (typeof window === 'object' && window?.localStorage?.getItem('user')) {
     if (getUser()?.loginVerifiedToken?.[0].token) {
-      const response = await authService.logout();
-      return response.Succeeded;
+      // REMOVED: authService.logout() call to fix circular dependency
+      // Just remove the user data locally
+      localStorage.removeItem('user');
+      return true;
     }
     return false;
   }

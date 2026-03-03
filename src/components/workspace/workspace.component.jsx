@@ -1,12 +1,19 @@
 "use client";
 
+console.log("🔍 DEBUG: workspace.component.jsx - Starting import");
+
 import { Menu } from "lucide-react";
+console.log("🔍 DEBUG: lucide-react imported");
+
 import useWorkspace from "@/components/workspace/use-workspace.hook";
+console.log("🔍 DEBUG: useWorkspace imported");
 import WorkspaceSidebar from "@/components/workspace/components/workspace-sidebar/workspace-sidebar.component";
 import WorkspaceMessages from "@/components/workspace/components/workspace-messages/workspace-messages.component";
 import WorkspaceChatInput from "@/components/workspace/components/workspace-chat-input/workspace-chat-input.component";
 
 export default function Workspace() {
+  console.log("🔍 DEBUG: Workspace component rendering");
+  
   const {
     fileInputRef,
     messagesEndRef,
