@@ -17,7 +17,7 @@ export default function Workspace() {
     isSignedIn,
     upload,
     list,
-    ask,
+    // ask, // Temporarily disabled
     documents,
     hasDocuments,
     // currentChatId,
@@ -75,34 +75,34 @@ export default function Workspace() {
 
         {/* SCROLL AREA */}
         <div className="flex-1 min-h-0 overflow-y-auto">
-          <WorkspaceMessages
-            messages={messages}
-            ask={ask}
-            hasDocuments={hasDocuments}
-            handleFeedback={handleFeedback}
-            messagesEndRef={messagesEndRef}
-          />
+                    <WorkspaceMessages
+                      messages={messages}
+                      ask={{ isLoading: false }} // Temporary placeholder
+                      hasDocuments={hasDocuments}
+                      handleFeedback={handleFeedback}
+                      messagesEndRef={messagesEndRef}
+                    />
         </div>
 
         {/* Chat input pinned to bottom */}
         <div className="shrink-0">
-          <WorkspaceChatInput
-            fileInputRef={fileInputRef}
-            selectedFile={selectedFile}
-            upload={upload}
-            ask={ask}
-            question={question}
-            setQuestion={setQuestion}
-            hasDocuments={hasDocuments}
-            handleFileSelect={handleFileSelect}
-            handleUploadClick={handleUploadClick}
-            handleSubmitUpload={handleSubmitUpload}
-            handleClearFile={handleClearFile}
-            handleFormSubmit={handleFormSubmit}
-            handleDragOver={handleDragOver}
-            handleDragLeave={handleDragLeave}
-            handleDropFile={handleDropFile}
-          />
+                    <WorkspaceChatInput
+                      fileInputRef={fileInputRef}
+                      selectedFile={selectedFile}
+                      upload={upload}
+                      ask={{ isLoading: false }} // Temporary placeholder
+                      question={question}
+                      setQuestion={setQuestion}
+                      hasDocuments={hasDocuments}
+                      handleFileSelect={handleFileSelect}
+                      handleUploadClick={handleUploadClick}
+                      handleSubmitUpload={handleSubmitUpload}
+                      handleClearFile={handleClearFile}
+                      handleFormSubmit={handleFormSubmit}
+                      handleDragOver={handleDragOver}
+                      handleDragLeave={handleDragLeave}
+                      handleDropFile={handleDropFile}
+                    />
         </div>
       </main>
     </div>

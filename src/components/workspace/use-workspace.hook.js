@@ -4,10 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAccessToken } from "@/common/utils/access-token.util";
 import { fetchDocuments, uploadPdf } from "@/provider/features/documents/documents.slice";
-import { 
-  askQuestion, 
-  submitFeedback
-} from "@/provider/features/chat/chat.slice";
+// import { 
+//   askQuestion, 
+//   submitFeedback
+// } from "@/provider/features/chat/chat.slice"; // Temporarily disabled
 
 function isAllowedUploadFile(file) {
   const allowedTypes = [
@@ -31,7 +31,7 @@ export default function useWorkspace() {
   // const [chats, setChats] = useState([]);
 
   const { upload, list } = useSelector((state) => state.documents);
-  const { ask } = useSelector((state) => state.chat);
+  // const { ask } = useSelector((state) => state.chat); // Temporarily disabled
 
   const documents = list?.data?.documents || [];
   const hasDocuments = documents.length > 0;
@@ -81,7 +81,7 @@ export default function useWorkspace() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, ask.isLoading]);
+  }, [messages]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -118,7 +118,12 @@ export default function useWorkspace() {
     await dispatch(
       uploadPdf({
         file: selectedFile,
-        successCallBack: () => {
+        successCallBack: (response) => {
+          // Store anonymous token if provided (for guest users)
+          if (response.anonymous_token && typeof window !== "undefined") {
+            window.localStorage.setItem("rag_access_token", response.anonymous_token);
+          }
+          
           setSelectedFile(null);
           if (fileInputRef.current) fileInputRef.current.value = "";
           loadDocuments();
@@ -139,50 +144,58 @@ export default function useWorkspace() {
   }
 
   async function handleAsk(q) {
-    const text = (q || question).trim();
-    if (!text || !hasDocuments) return;
+    // Temporarily disabled chat functionality
+    console.log("Chat functionality temporarily disabled");
+    return;
+    
+    // const text = (q || question).trim();
+    // if (!text || !hasDocuments) return;
 
-    setQuestion("");
-    setMessages((prev) => [...prev, { role: "user", content: text, citations: [] }]);
+    // setQuestion("");
+    // setMessages((prev) => [...prev, { role: "user", content: text, citations: [] }]);
 
-    const response = await dispatch(
-      askQuestion({
-        question: text,
-        successCallBack: (data) => {
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            { role: "user", content: text, citations: [] },
-            {
-              role: "assistant",
-              content: data.answer,
-              citations: data.citations || [],
-            },
-          ]);
-        },
-      }),
-    );
+    // const response = await dispatch(
+    //   askQuestion({
+    //     question: text,
+    //     successCallBack: (data) => {
+    //       setMessages((prev) => [
+    //         ...prev.slice(0, -1),
+    //         { role: "user", content: text, citations: [] },
+    //         {
+    //           role: "assistant",
+    //           content: data.answer,
+    //           citations: data.citations || [],
+    //         },
+    //       ]);
+    //     },
+    //   }),
+    // );
 
-    if (response?.meta?.requestStatus === "rejected") {
-      setMessages((prev) => [
-        ...prev.slice(0, -1),
-        {
-          role: "assistant",
-          content: "Sorry, I couldn't process your question. Please try again.",
-          citations: [],
-          error: true,
-        },
-      ]);
-    }
+    // if (response?.meta?.requestStatus === "rejected") {
+    //   setMessages((prev) => [
+    //     ...prev.slice(0, -1),
+    //     {
+    //       role: "assistant",
+    //       content: "Sorry, I couldn't process your question. Please try again.",
+    //       citations: [],
+    //       error: true,
+    //     },
+    //   ]);
+    // }
   }
 
   function handleFeedback(rating, lastUserMsg, lastAssistantMsg) {
-    if (!lastUserMsg || !lastAssistantMsg) return;
-    dispatch(
-      submitFeedback({
-        payload: { question: lastUserMsg, answer: lastAssistantMsg, rating },
-        successCallBack: () => {},
-      }),
-    );
+    // Temporarily disabled feedback functionality
+    console.log("Feedback functionality temporarily disabled");
+    return;
+    
+    // if (!lastUserMsg || !lastAssistantMsg) return;
+    // dispatch(
+    //   submitFeedback({
+    //     payload: { question: lastUserMsg, answer: lastAssistantMsg, rating },
+    //     successCallBack: () => {},
+    //   }),
+    // );
   }
 
   function handleFormSubmit(e) {
@@ -234,7 +247,7 @@ export default function useWorkspace() {
     isSignedIn,
     upload,
     list,
-    ask,
+    // ask, // Temporarily disabled
     documents,
     hasDocuments,
     // currentChatId,

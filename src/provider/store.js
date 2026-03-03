@@ -3,7 +3,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./features/auth/auth.slice";
 import documentsReducer from "./features/documents/documents.slice";
-import chatReducer from "./features/chat/chat.slice";
+// import chatReducer from "./features/chat/chat.slice"; // Temporarily disabled
 // import anonymousReducer from "./features/anonymous/anonymous.slice"; // Temporarily disabled
 
 const persistConfig = {
@@ -15,7 +15,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   documents: documentsReducer,
-  chat: chatReducer,
+  // chat: chatReducer, // Temporarily disabled
   // anonymous: anonymousReducer, // Temporarily disabled
 });
 
