@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { FileText } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getAccessToken } from "@/common/utils/access-token.util";
+import { useDispatch } from "react-redux";
+import { logout } from "@/provider/features/auth/auth.slice";
+import useAuthSession from "@/common/hooks/use-auth-session.hook";
 
 /**
  * Header for the app workspace. Minimal, chat-style.
@@ -11,15 +12,12 @@ import { getAccessToken } from "@/common/utils/access-token.util";
  * Uses !important overrides to beat global link styles (text-primary-600).
  */
 export default function WorkspaceHeader() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const dispatch = useDispatch();
+  const { isSignedIn, email } = useAuthSession();
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const hasToken =
-      Boolean(window.localStorage.getItem("rag_access_token")) ||
-      Boolean(getAccessToken());
-    setIsSignedIn(hasToken);
-  }, []);
+  async function handleSignOut() {
+    await dispatch(logout());
+  }
 
   return (
     <header className="shrink-0 border-b border-white/15 bg-black/98 backdrop-blur-sm">
@@ -35,19 +33,36 @@ export default function WorkspaceHeader() {
             Compliance Assistant
           </span>
         </Link>
-        <nav className="flex shrink-0 items-center gap-1 sm:gap-2">
+        <nav className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
           <Link
             href="/"
             className="rounded-lg px-2 py-1.5 text-xs font-medium !text-white transition-colors hover:bg-white/10 hover:!text-amber-400 sm:px-3 sm:py-2 sm:text-sm"
           >
             Home
           </Link>
-          <Link
-            href="/"
-            className="rounded-lg bg-amber-400 px-3 py-1.5 text-xs font-semibold !text-black transition-colors hover:bg-amber-300 sm:px-4 sm:py-2 sm:text-sm"
-          >
-            Sign in
-          </Link>
+          {isSignedIn ? (
+            <>
+              {email && (
+                <span className="hidden max-w-[160px] truncate px-1 text-xs text-white/70 sm:inline sm:text-sm">
+                  {email}
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold !text-white transition-colors hover:bg-white/10 sm:px-4 sm:py-2 sm:text-sm"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="rounded-lg bg-amber-400 px-3 py-1.5 text-xs font-semibold !text-black transition-colors hover:bg-amber-300 sm:px-4 sm:py-2 sm:text-sm"
+            >
+              Sign in
+            </Link>
+          )}
         </nav>
       </div>
     </header>

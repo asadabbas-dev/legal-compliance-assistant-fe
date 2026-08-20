@@ -29,7 +29,7 @@ const StyledMaterialDesignContent = styled(MaterialDesignContent)(() => ({
 
 // Routes where Lenis smooth scroll should be DISABLED
 // because they have their own inner scroll containers (like the chat workspace)
-const LENIS_DISABLED_ROUTES = ["/app", "/workspace"];
+const LENIS_DISABLED_ROUTES = ["/workspace"];
 
 function LayoutWrapper({ children }) {
   const pathname = usePathname();

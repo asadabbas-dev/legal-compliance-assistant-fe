@@ -27,7 +27,7 @@ export default function Cta() {
             style={{ perspective: 1000, transformStyle: "preserve-3d" }}
           >
             <Link
-              href="/app"
+              href="/workspace"
               className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-10 py-4 text-lg font-bold !text-white shadow-xl ring-2 ring-slate-700 transition-all duration-200 hover:bg-slate-800 hover:shadow-2xl"
             >
               Get Started Free

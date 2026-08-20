@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import documentsService from "./documents.service";
+import { isAuthenticated, setGuestToken } from "@/common/utils/users.util";
 
 const generalState = {
   isLoading: false,
@@ -91,8 +92,12 @@ export const documentsSlice = createSlice({
         state.upload.data = action.payload;
         
         // Store anonymous token if provided (for guest users)
-        if (action.payload.anonymous_token && typeof window !== "undefined") {
-          window.localStorage.setItem("rag_access_token", action.payload.anonymous_token);
+        if (
+          action.payload.anonymous_token &&
+          typeof window !== "undefined" &&
+          !isAuthenticated()
+        ) {
+          setGuestToken(action.payload.anonymous_token);
         }
       })
       .addCase(uploadPdf.rejected, (state, action) => {

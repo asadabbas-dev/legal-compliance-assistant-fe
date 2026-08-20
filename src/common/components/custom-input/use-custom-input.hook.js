@@ -1,7 +1,6 @@
 "use client";
 
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Eye, EyeOff } from "lucide-react";
 import { useCallback, useState } from "react";
 
 export default function useCustomInput(onChange, type, endIcon) {
@@ -15,10 +14,6 @@ export default function useCustomInput(onChange, type, endIcon) {
     border: "1px solid gray",
   };
 
-  const passwordMouseDownHandler = (event) => {
-    event.preventDefault();
-  };
-
   const inputChangeHandler = (e) => {
     if (onChange) {
       onChange(e);
@@ -28,23 +23,23 @@ export default function useCustomInput(onChange, type, endIcon) {
   const getInputEndAdornment = useCallback(() => {
     if (type === "password") {
       return (
-        <IconButton
-          aria-label="toggle password visibility"
-          onClick={() => setShowPassword(!showPassword)}
-          onMouseDown={passwordMouseDownHandler}
-          onMouseUp={passwordMouseDownHandler}
-          edge="end"
+        <button
+          type="button"
+          aria-label={showPassword ? "Hide password" : "Show password"}
+          onClick={() => setShowPassword((prev) => !prev)}
+          onMouseDown={(event) => event.preventDefault()}
+          className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-800"
         >
           {showPassword ? (
-            <VisibilityOff style={{ fontSize: "20px" }} />
+            <EyeOff className="h-4 w-4" strokeWidth={1.75} />
           ) : (
-            <Visibility style={{ fontSize: "20px" }} />
+            <Eye className="h-4 w-4" strokeWidth={1.75} />
           )}
-        </IconButton>
+        </button>
       );
     }
     return endIcon;
-  }, [type, showPassword, endIcon, passwordMouseDownHandler]);
+  }, [type, showPassword, endIcon]);
 
   return {
     showPassword,

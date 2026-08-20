@@ -10,6 +10,7 @@ import {
   UserX,
   Trash2,
   RefreshCw,
+  MessageSquare,
 } from "lucide-react";
 
 export default function WorkspaceSidebar({
@@ -19,6 +20,9 @@ export default function WorkspaceSidebar({
   isSignedIn,
   list,
   documents,
+  chats = [],
+  currentChatId,
+  handleSelectChat,
   handleDeleteDocument,
   handleRefreshDocuments,
 }) {
@@ -52,39 +56,80 @@ export default function WorkspaceSidebar({
 
       <div className="flex-1 overflow-y-auto p-3">
         <div className="space-y-3 sm:space-y-4">
-          {/* User Status */}
           <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2">
             {isSignedIn ? (
               <>
                 <User className="h-4 w-4 text-green-400" />
                 <span className="text-xs font-medium text-green-400">
-                  Signed In - History On
+                  Signed in — history saved
                 </span>
               </>
             ) : (
               <>
                 <UserX className="h-4 w-4 text-amber-400" />
                 <span className="text-xs font-medium text-amber-400">
-                  Guest Mode - History Off
+                  Guest mode — no history
                 </span>
               </>
             )}
           </div>
 
-          {/* Documents */}
+          {isSignedIn && (
+            <div>
+              <h3 className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-white/80 sm:text-xs">
+                Chats
+              </h3>
+              <div className="max-h-48 space-y-1 overflow-y-auto">
+                {chats.length === 0 ? (
+                  <p className="px-2 py-3 text-xs text-white/60">
+                    No saved chats yet. Ask a question to start one.
+                  </p>
+                ) : (
+                  chats.map((chat) => {
+                    const active =
+                      String(chat.id) === String(currentChatId);
+                    return (
+                      <button
+                        key={chat.id}
+                        type="button"
+                        onClick={() => handleSelectChat?.(chat.id)}
+                        className={`flex w-full items-start gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
+                          active
+                            ? "bg-amber-400/15 text-white"
+                            : "text-white/80 hover:bg-white/5 hover:text-white"
+                        }`}
+                      >
+                        <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+                        <span className="line-clamp-2 text-xs font-medium">
+                          {chat.title || "New chat"}
+                        </span>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          )}
+
           <div>
-            <div className="flex items-center justify-between mb-1.5 px-2">
+            <div className="mb-1.5 flex items-center justify-between px-2">
               <h3 className="text-[10px] font-semibold uppercase tracking-wider text-white/80 sm:text-xs">
                 Your files
               </h3>
               <button
                 onClick={handleRefreshDocuments}
-                className="p-1 rounded hover:bg-white/10 transition-colors"
+                className="rounded p-1 transition-colors hover:bg-white/10"
                 title="Refresh documents"
+                type="button"
               >
                 <RefreshCw className="h-3 w-3 text-white/60 hover:text-white/80" />
               </button>
             </div>
+            {!isSignedIn && (
+              <p className="mb-2 px-2 text-[11px] leading-snug text-white/45">
+                Files stay for this tab only. Sign in to keep them.
+              </p>
+            )}
             <div className="max-h-40 space-y-1 overflow-y-auto sm:max-h-48">
               {list.isLoading ? (
                 <div className="flex justify-center py-6">
@@ -103,14 +148,14 @@ export default function WorkspaceSidebar({
                 documents.map((doc) => (
                   <div
                     key={doc.id}
-                    className="group relative flex items-start gap-3 rounded-lg px-3 py-3 hover:bg-white/5 transition-colors"
+                    className="group relative flex items-start gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-white/5"
                   >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-400/20">
                       <FileText className="h-5 w-5 text-amber-400" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p
-                        className="text-xs font-medium text-white leading-tight mb-1 truncate max-w-[150px]"
+                        className="mb-1 max-w-[150px] truncate text-xs font-medium leading-tight text-white"
                         title={doc.filename}
                       >
                         {doc.filename}
@@ -121,7 +166,7 @@ export default function WorkspaceSidebar({
                         </p>
                         <div className="flex items-center gap-2">
                           <span
-                            className={`rounded-lg px-2 py-0.5 text-[10px] font-medium flex items-center gap-1 ${
+                            className={`flex items-center gap-1 rounded-lg px-2 py-0.5 text-[10px] font-medium ${
                               doc.status === "processing"
                                 ? "bg-blue-500/20 text-blue-400"
                                 : doc.status === "failed"
@@ -130,7 +175,7 @@ export default function WorkspaceSidebar({
                             }`}
                           >
                             {doc.status === "processing" && (
-                              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                              <div className="h-2 w-2 animate-pulse rounded-full bg-blue-400"></div>
                             )}
                             {doc.status === "processing"
                               ? "Processing..."
@@ -140,8 +185,9 @@ export default function WorkspaceSidebar({
                           </span>
                           <button
                             onClick={() => handleDeleteDocument?.(doc.id)}
-                            className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-500/20 transition-all"
+                            className="rounded p-1 opacity-0 transition-all hover:bg-red-500/20 group-hover:opacity-100"
                             title="Delete document"
+                            type="button"
                           >
                             <Trash2 className="h-3 w-3 text-red-400 hover:text-red-300" />
                           </button>

@@ -42,7 +42,7 @@ export default function AppHeader() {
             Sign in
           </Link>
           <Link
-            href="/app"
+            href="/workspace"
             className="inline-flex items-center justify-center rounded-lg bg-amber-400 px-4 py-2 text-sm font-bold text-black shadow-sm transition-all duration-200 hover:scale-[1.02] hover:bg-amber-300 hover:shadow-md active:scale-[0.98]"
           >
             Get Started

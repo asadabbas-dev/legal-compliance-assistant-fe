@@ -1,6 +1,6 @@
 "use client";
 
-import { getEmailForURL } from "@/common/utils/users.util";
+import { isAuthenticated } from "@/common/utils/users.util";
 import { signUp } from "@/provider/features/auth/auth.slice";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
@@ -10,28 +10,20 @@ import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("First Name is required"),
-  lastName: Yup.string().required("Last Name is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  terms: Yup.boolean().oneOf(
-    [true],
-    "You must accept the terms and conditions."
-  ),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
-    .required("Password is required")
-    .matches(/[0-9]/, "Password requires a number")
-    .matches(/[a-z]/, "Password requires a lowercase letter")
-    .matches(/[A-Z]/, "Password requires an uppercase letter")
-    .matches(/[^\w]/, "Use Special Character like @ # etc"),
+    .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Confirm password is required"),
 });
 
 export default function useSignUp() {
   const dispatch = useDispatch();
-  const router = useRouter(null);
-  const [isChecked, setIsChecked] = useState(false);
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const {
@@ -44,49 +36,37 @@ export default function useSignUp() {
     resolver: yupResolver(validationSchema),
   });
 
-  const { firstName, lastName, email, password } = watch();
+  const { email, password, confirmPassword } = watch();
 
   useEffect(() => {
-    setIsChecked(false);
+    if (isAuthenticated()) {
+      router.replace("/workspace");
+    }
   }, [router]);
-
-  const moveRouter = (data) => {
-    router.push(
-      `/verify-email?type=email-verification&email=${getEmailForURL(data.email)}`
-    );
-  };
 
   const onSubmit = async (values) => {
     setLoading(true);
-    const response = await dispatch(
-      signUp({
-        payload: { ...values, role: "BUSINESS_OWNER" },
-        successCallBack: moveRouter,
-      })
-    );
-    response && setLoading(false);
-  };
-
-  const moveRouterSignup = (data) => {
-    const _email = getEmailForURL(data.email);
-    if (data.isPhoneVerified && data.isProfileCompleted) {
-      router.push(`/two-factor-auth?userId=${data.id}&phone=${data.phone}`);
-    } else {
-      router.push(`/profile?email=${_email}&userId=${data.id}`);
+    try {
+      const result = await dispatch(
+        signUp({
+          payload: { email: values.email, password: values.password },
+        }),
+      );
+      if (!signUp.fulfilled.match(result)) return;
+      router.push("/workspace");
+    } finally {
+      setLoading(false);
     }
   };
 
   return {
-    firstName,
-    lastName,
     handleSubmit,
     onSubmit,
     register,
     errors,
-    isChecked,
     loading,
-    setIsChecked,
     email,
     password,
+    confirmPassword,
   };
 }

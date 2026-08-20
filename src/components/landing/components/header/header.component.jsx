@@ -70,7 +70,7 @@ export default function Header() {
             Sign in
           </Link>
           <Link
-            href="/app"
+            href="/workspace"
             className="inline-flex items-center justify-center rounded-lg bg-amber-400 px-4 py-2 text-sm font-bold !text-slate-900 shadow-lg transition-all duration-200 hover:bg-amber-300 hover:shadow-xl active:scale-[0.98]"
           >
             Get Started
@@ -127,7 +127,7 @@ export default function Header() {
             Sign in
           </Link>
           <Link
-            href="/app"
+            href="/workspace"
             onClick={closeMobile}
             className="mx-4 mt-2 inline-flex items-center justify-center rounded-lg bg-amber-400 px-4 py-3 text-base font-bold !text-slate-900 shadow-lg transition-all duration-200 hover:bg-amber-300 active:scale-[0.98]"
           >

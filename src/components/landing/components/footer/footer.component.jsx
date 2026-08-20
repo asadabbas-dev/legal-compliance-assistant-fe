@@ -79,7 +79,7 @@ export default function Footer() {
               Sign in
             </Link>
             <Link
-              href="/app"
+              href="/workspace"
               className="!text-slate-200 font-medium transition hover:!text-white"
             >
               Get Started

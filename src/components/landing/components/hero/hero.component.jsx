@@ -319,7 +319,7 @@ export default function Hero() {
                 }}
               >
                 <Link
-                  href="/app"
+                  href="/workspace"
                   className="flex h-full min-h-[42px] w-full items-center justify-center rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-bold !text-slate-900 shadow-lg ring-2 ring-amber-300/50 transition-all duration-200 hover:bg-amber-300 hover:shadow-xl active:scale-[0.98] sm:min-h-[48px] sm:px-6 sm:py-3 sm:text-base lg:px-8 lg:py-3.5"
                 >
                   Get Started

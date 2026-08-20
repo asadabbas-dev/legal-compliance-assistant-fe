@@ -20,7 +20,7 @@ Next.js application for the Legal & Compliance Knowledge Assistant. Landing page
 ```
 src/
   app/                    # Next.js App Router
-    app/                  # /app — workspace (chat + documents)
+    app/                  # /workspace — chat + documents
     page.jsx              # / — landing
     login/                # /login
     sign-up/              # /sign-up
@@ -56,7 +56,7 @@ cp .env.local.example .env.local
 
 | Variable                 | Description                          |
 |--------------------------|--------------------------------------|
-| `NEXT_PUBLIC_RAG_API_URL`| Backend API base (e.g. `http://localhost:8000/api/v1`) |
+| `NEXT_PUBLIC_API_BASE_URL`| Backend API base URL (e.g. `http://localhost:8000/api/v1`) |
 
 The backend must be running for upload, document list, and Q&A to work.
 
@@ -72,7 +72,7 @@ The backend must be running for upload, document list, and Q&A to work.
 
    ```bash
    cp .env.local.example .env.local
-   # Edit .env.local and set NEXT_PUBLIC_RAG_API_URL to your backend URL
+   # Edit .env.local and set NEXT_PUBLIC_API_BASE_URL to your backend API URL
    ```
 
 3. Start the dev server:
@@ -84,8 +84,8 @@ The backend must be running for upload, document list, and Q&A to work.
 4. Open [http://localhost:3000](http://localhost:3000).
 
 - **/** — Landing page  
-- **/app** — Workspace (upload documents, ask questions, view citations)  
-- **/login**, **/sign-up** — Auth (if enabled)
+- **/workspace** — Workspace (upload documents, ask questions, view citations)  
+- **/login**, **/sign-up** — Auth
 
 ## Build & Run (Production)
 
@@ -102,13 +102,13 @@ From the repo root you can run the whole stack (see root `README.md`). The front
 
 ```bash
 docker build -t compliance-frontend .
-docker run -p 3000:3000 -e NEXT_PUBLIC_RAG_API_URL=http://backend:8000/api/v1 compliance-frontend
+docker run -p 3000:3000 -e NEXT_PUBLIC_API_BASE_URL=http://backend:8000/api/v1 compliance-frontend
 ```
 
 ## Features
 
 - **Landing** — Responsive marketing page with Lenis smooth scroll; header with mobile menu.
-- **App (/app)** — Chat-style workspace: sidebar (documents, new chat), main area (messages + citations), bottom input with file upload.
+- **Workspace (/workspace)** — Chat-style workspace: sidebar (chats, documents, new chat), main area (messages + citations), bottom input with file upload.
 - **Responsive** — Layout and typography scale for mobile, tablet, and desktop.
 
 ## Browser Support

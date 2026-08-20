@@ -1,16 +1,34 @@
+"use client";
+
 import Link from "next/link";
+import { FileCheck, Scale, Shield } from "lucide-react";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
-import Loader from "@/common/components/loader/loader.component";
-import useLogin from "./use-login.hook";
 import CustomInput from "@/common/components/custom-input/custom-input.component";
+import useLogin from "./use-login.hook";
+
+const highlights = [
+  {
+    icon: Shield,
+    title: "Private by design",
+    body: "Your policies stay in your workspace. Answers come from your documents only.",
+  },
+  {
+    icon: FileCheck,
+    title: "Cited answers",
+    body: "Every response points back to the page it came from, so you can verify it.",
+  },
+  {
+    icon: Scale,
+    title: "Built for legal teams",
+    body: "Ask in plain language about contracts, policies, and compliance docs.",
+  },
+];
 
 export default function Login() {
-  // hooks
   const {
     onSubmit,
     isChecked,
     setIsChecked,
-    router,
     loading,
     register,
     handleSubmit,
@@ -20,36 +38,94 @@ export default function Login() {
   } = useLogin();
 
   return (
-    <div className="form-wrapper">
-      <div className="form-container">
-        <div className="form-card">
-          <Link href="/" className="flex justify-center mb-2">
-            <img
-              src="/assets/images/horizontal-logo.png"
-              alt="Logo"
-              className="h-[40px] sm:h-[60px]"
-            />
+    <div className="relative flex min-h-screen overflow-y-auto bg-black">
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 50% at 20% 20%, rgba(251, 191, 36, 0.12), transparent 55%), radial-gradient(ellipse 60% 40% at 90% 80%, rgba(251, 191, 36, 0.08), transparent 50%)",
+        }}
+      />
+
+      <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col lg:flex-row">
+        <aside className="hidden flex-col justify-between px-10 py-10 lg:flex lg:w-[46%] lg:py-14">
+          <Link
+            href="/"
+            className="text-lg font-semibold tracking-tight !text-white hover:!text-white"
+          >
+            Compliance Assistant
           </Link>
-          <div className="form-header">
-            {/* <h1 className="form-header-h1">Login</h1> */}
-            <p className="form-header-p">
-              Welcome back. <span className="text-primary">Login</span> to your
-              account
+
+          <div className="max-w-md">
+            <p className="mb-3 text-sm font-medium uppercase tracking-[0.18em] text-amber-400">
+              Legal &amp; compliance
             </p>
+            <h1 className="text-4xl font-semibold leading-tight tracking-tight text-white">
+              Sign in to your workspace
+            </h1>
+            <p className="mt-4 text-base leading-relaxed text-white/65">
+              Ask questions about your policies and get answers with page-level
+              citations.
+            </p>
+
+            <ul className="mt-10 space-y-6">
+              {highlights.map(({ icon: Icon, title, body }) => (
+                <li key={title} className="flex gap-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-amber-400">
+                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-white/55">
+                      {body}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="form-body">
-            <form
-              className="w-full"
-              onSubmit={handleSubmit(onSubmit)}
-              method="post"
-            >
-              <div className="form-fields">
+
+          <p className="text-xs text-white/35">
+            Answers are generated from your uploaded documents. Always verify
+            citations before relying on them.
+          </p>
+        </aside>
+
+        <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-8 lg:px-10 lg:py-14">
+          <div className="w-full max-w-[420px]">
+            <div className="mb-8 lg:hidden">
+              <Link
+                href="/"
+                className="text-base font-semibold tracking-tight !text-white hover:!text-white"
+              >
+                Compliance Assistant
+              </Link>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white p-6 shadow-2xl shadow-black/40 sm:p-8">
+              <div className="mb-7">
+                <h2 className="text-2xl font-semibold tracking-tight text-neutral-900">
+                  Welcome back
+                </h2>
+                <p className="mt-1.5 text-sm text-neutral-500">
+                  Sign in with your email to continue.
+                </p>
+              </div>
+
+              <form
+                className="space-y-5"
+                onSubmit={handleSubmit(onSubmit)}
+                method="post"
+                noValidate
+              >
                 <CustomInput
-                  label="Email/Username"
+                  label="Email"
                   name="email"
+                  type="email"
                   register={register}
                   errors={errors}
-                  placeholder="Enter Email or Username"
+                  placeholder="you@company.com"
                   isRequired={true}
                 />
 
@@ -59,104 +135,47 @@ export default function Login() {
                   type="password"
                   register={register}
                   errors={errors}
-                  placeholder="*******"
+                  placeholder="Enter your password"
                   isRequired={true}
                 />
-              </div>
 
-              <div className="mt-4 flex items-center justify-between">
-                <div
-                  className="flex gap-[6.5px]"
-                  onClick={() => setIsChecked(!isChecked)}
-                >
-                  {isChecked ? (
-                    <img src="/assets/icons/check.svg" alt="" />
-                  ) : (
-                    <img src="/assets/icons/uncheck.svg" alt="" />
-                  )}
-
-                  <label
-                    htmlFor="terms"
-                    id="terms"
-                    className="fon cursor-pointer text-[12px]
-                 font-normal not-italic leading-[18px]"
-                  >
-                    Remember Me
+                <div className="flex items-center justify-between pt-0.5">
+                  <label className="flex cursor-pointer items-center gap-2.5">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => setIsChecked(e.target.checked)}
+                      className="h-4 w-4 cursor-pointer rounded border-neutral-300 text-amber-500 accent-amber-400 focus:ring-amber-400"
+                    />
+                    <span className="text-sm text-neutral-600">
+                      Remember me
+                    </span>
                   </label>
                 </div>
-                <Link
-                  href="/forget-password"
-                  onClick={() =>
-                    router.push(
-                      "/forget-password?btnText=Password%20Recovery%20Link",
-                    )
-                  }
-                  className="forgotText rounded-xl text-xs font-bold leading-[18px] "
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-              <div className="form-btn-c mt-[32px]">
+
                 <CustomButton
                   type="submit"
-                  className="btn-primary h-[50px] w-full rounded-xl px-[30px] py-3 text-base leading-6"
-                  text={!loading && "Login"}
-                  startIcon={<Loader loading={loading} />}
+                  variant="primary"
+                  size="lg"
+                  className="!mt-2 h-12 w-full rounded-xl bg-amber-400 text-base font-semibold !text-neutral-900 shadow-sm hover:bg-amber-300"
+                  text={loading ? "Signing in…" : "Sign in"}
+                  loading={loading}
                   disabled={!email || !password || loading}
                 />
-              </div>
+              </form>
 
-              <div className="form-or-content mt-1">
-                <div className="form-or-content-line" />
-                <span className="form-or-content-span eading-[18px]">Or</span>
-                <div className="form-or-content-line" />
-              </div>
-              <div className="login-with-provider">
-                <button
-                  // onClick={() => signInWithGoogle(loginWithOAuth)}
-                  className="login-provider-btn"
-                  type="button"
+              <p className="mt-6 text-center text-sm text-neutral-500">
+                Don&apos;t have an account?{" "}
+                <Link
+                  href="/sign-up"
+                  className="font-semibold !text-neutral-900 hover:!text-amber-600"
                 >
-                  <img
-                    src="/assets/images/google-icon.svg"
-                    alt="login with Google"
-                    className="h-6 w-6"
-                  />
-                </button>
-                <button
-                  // onClick={() => signInWithFacebook(loginWithOAuth)}
-                  className="login-provider-btn"
-                  type="button"
-                >
-                  <img
-                    src="/assets/images/facebook-icon.svg"
-                    alt="login with Facebook"
-                    className="h-6 w-6"
-                  />
-                </button>
-                <button
-                  // onClick={() => signInWithMicrosoft(loginWithOAuth)}
-                  className="login-provider-btn"
-                  type="button"
-                >
-                  <img
-                    src="/assets/images/microsoft-icon.svg"
-                    alt="login with Microsoft"
-                    className="h-[18px] w-[17.93px]"
-                  />
-                </button>
-              </div>
-              <div className="text-xs font-normal leading-[18px] text-text-dark-gray">
-                <p className="login mt-5 text-center">
-                  Create an account?
-                  <Link href="/" className="span-link">
-                    Signup
-                  </Link>
-                </p>
-              </div>
-            </form>
+                  Sign up
+                </Link>
+              </p>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

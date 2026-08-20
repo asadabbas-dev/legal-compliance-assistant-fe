@@ -1,12 +1,8 @@
 "use client";
 
-import { isLoginVerified } from "@/common/utils/access-token.util";
-import {
-  login,
-  loginAndSignUpWithOAuth,
-} from "@/provider/features/auth/auth.slice";
+import { isAuthenticated } from "@/common/utils/users.util";
+import { login } from "@/provider/features/auth/auth.slice";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AES, enc } from "crypto-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,7 +14,7 @@ const validationSchema = Yup.object().shape({
     .email("Invalid email address")
     .required("Email is required"),
   password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
+    .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
 });
 
@@ -41,80 +37,48 @@ export default function useLogin() {
 
   const { email, password } = watch();
 
-  // useEffect(() => {
-  //   if (isLoginVerified()) {
-  //   }
-  // }, [router]);
+  useEffect(() => {
+    if (isAuthenticated()) {
+      router.replace("/workspace");
+    }
+  }, [router]);
 
   useEffect(() => {
-    handleLogin();
-  }, []);
-
-  const handleLogin = () => {
-    if (typeof window === "object") {
-      // Check if the browser supports localStorage
-      if (
-        localStorage &&
-        localStorage.getItem("rememberedUsername") &&
-        localStorage.getItem("rememberedPassword")
-      ) {
-        const storedUsername = localStorage.getItem("rememberedUsername");
-        const storedEncryptedPassword =
-          localStorage.getItem("rememberedPassword");
-        // Compare the entered password with the stored encrypted password
-        const bytes = AES.decrypt(
-          storedEncryptedPassword,
-          process.env.NEXT_PUBLIC_MAIN_URL_SECRET_KEY,
-        );
-        const decryptedPassword = bytes.toString(enc.Utf8);
-        setValue("email", storedUsername);
-        setValue("password", decryptedPassword);
-      }
+    const rememberedEmail = localStorage.getItem("rememberedUsername");
+    if (rememberedEmail) {
+      setValue("email", rememberedEmail);
+      setIsChecked(true);
     }
-  };
+  }, [setValue]);
 
   const onSubmit = async (values) => {
     setLoading(true);
-    const response = await dispatch(login({ payload: { ...values } }));
-    response && setLoading(false);
-    if (typeof window === "object" && isChecked) {
-      // Check if the browser supports localStorage
-      if (localStorage) {
-        // Encrypt the password
-        const encryptedPassword = AES.encrypt(
-          values.password,
-          process.env.NEXT_PUBLIC_MAIN_URL_SECRET_KEY,
-        ).toString();
-        localStorage.setItem("rememberedUsername", values.email);
-        localStorage.setItem("rememberedPassword", encryptedPassword);
-      }
-    }
-    if (isChecked === false) {
-      localStorage.removeItem("rememberedUsername");
-      localStorage.removeItem("rememberedPassword");
-    }
-  };
+    try {
+      const result = await dispatch(
+        login({
+          payload: { email: values.email, password: values.password },
+        }),
+      );
+      if (!login.fulfilled.match(result)) return;
 
-  const loginWithOAuth = (loginType, email, accessToken) => {
-    dispatch(
-      loginAndSignUpWithOAuth({
-        loginType,
-        email,
-        accessToken,
-        successCallBack: moveRouter,
-      }),
-    );
+      if (isChecked) {
+        localStorage.setItem("rememberedUsername", values.email);
+      } else {
+        localStorage.removeItem("rememberedUsername");
+      }
+      localStorage.removeItem("rememberedPassword");
+      router.push("/workspace");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {
     onSubmit,
-
     isChecked,
     setIsChecked,
-
     router,
     loading,
-    loginWithOAuth,
     register,
     handleSubmit,
     errors,

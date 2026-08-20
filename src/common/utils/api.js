@@ -3,32 +3,56 @@
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { getAccessToken } from "./access-token.util";
-import { removeUser } from "./users.util";
+import {
+  ACCESS_TOKEN_KEY,
+  clearGuestToken,
+  getGuestToken,
+  isAuthenticated,
+  removeUser,
+} from "./users.util";
+
+function getStoredAccessToken() {
+  if (typeof window !== "object") return undefined;
+  if (isAuthenticated()) {
+    return window.localStorage.getItem(ACCESS_TOKEN_KEY) || getAccessToken();
+  }
+  return getGuestToken();
+}
 
 const api = (headers = null) => {
-  const accessToken =
-    (typeof window === "object" &&
-      window.localStorage?.getItem("rag_access_token")) ||
-    getAccessToken();
-
   const defaultHeaders = {
     Accept: "application/json",
   };
 
-  const combinedHeaders = accessToken
-    ? { ...defaultHeaders, ...headers, Authorization: `Bearer ${accessToken}` }
-    : { ...defaultHeaders, ...headers };
+  const combinedHeaders = { ...defaultHeaders, ...(headers || {}) };
+  if (!combinedHeaders.Authorization) {
+    const accessToken = getStoredAccessToken();
+    if (accessToken) {
+      combinedHeaders.Authorization = `Bearer ${accessToken}`;
+    }
+  }
 
   const apiInstance = axios.create({
     baseURL:
-      process.env.NEXT_PUBLIC_MAIN_URL ||
-      process.env.NEXT_PUBLIC_RAG_API_URL ||
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
       "http://localhost:8000/api/v1",
     headers: combinedHeaders,
   });
 
   // Request interceptor: auth + content-type handling
   apiInstance.interceptors.request.use((config) => {
+    const requestPath = `${config.baseURL || ""}${config.url || ""}`;
+    const isPublicAuth =
+      requestPath.includes("/auth/login") ||
+      requestPath.includes("/auth/register");
+    if (isPublicAuth && config.headers) {
+      if (typeof config.headers.delete === "function") {
+        config.headers.delete("Authorization");
+      } else {
+        delete config.headers.Authorization;
+      }
+    }
+
     // Keep multipart uploads valid (browser sets boundary automatically).
     if (typeof FormData !== "undefined" && config.data instanceof FormData) {
       if (config.headers && typeof config.headers.delete === "function") {
@@ -60,18 +84,31 @@ const api = (headers = null) => {
         error.message ||
         error.toString();
 
-      // Handle unauthorized
-      if (status === 401 && typeof window !== "undefined") {
+      // Only clear the session for a bad/expired token — not for failed login.
+      const silentAuthErrors = new Set([
+        "Invalid token",
+        "Not authenticated",
+        "User not found",
+      ]);
+      if (
+        status === 401 &&
+        typeof window !== "undefined" &&
+        (silentAuthErrors.has(detail) || silentAuthErrors.has(message))
+      ) {
         removeUser();
-        window.location.href = "/";
-        return;
+        clearGuestToken();
       }
 
-      if (Array.isArray(detail)) {
+      const skipToast =
+        status === 401 &&
+        (silentAuthErrors.has(detail) || silentAuthErrors.has(message));
+
+      if (!skipToast && Array.isArray(detail)) {
         detail.forEach((item) =>
           enqueueSnackbar(item?.msg || String(item), { variant: "error" }),
         );
       } else if (
+        !skipToast &&
         typeof message === "string" &&
         message !== "Record Not Found"
       ) {

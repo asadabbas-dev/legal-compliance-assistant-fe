@@ -143,6 +143,14 @@ export const chatSlice = createSlice({
         state.create.isLoading = false;
         state.create.isSuccess = true;
         state.create.data = action.payload;
+        const existing = Array.isArray(state.list.data) ? state.list.data : [];
+        const created = action.payload;
+        if (created?.id) {
+          state.list.data = [
+            created,
+            ...existing.filter((chat) => String(chat.id) !== String(created.id)),
+          ];
+        }
       })
       .addCase(createChatSession.rejected, (state, action) => {
         state.create.isLoading = false;

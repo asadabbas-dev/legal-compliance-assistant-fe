@@ -1,83 +1,49 @@
 "use client";
 
 import { isJwtExpired } from "jwt-check-expiration";
-// import authService from "@/provider/features/auth/auth.service"; // REMOVED: Causes circular dependency
-import { getUser } from "./users.util";
+import { ACCESS_TOKEN_KEY, getUser } from "./users.util";
 
-/**
- * Retrive access token from local storage
- * @returns string | undefined
- */
-export const getAccessToken = (data) => {
-  if (
-    (typeof window === "object" && window?.localStorage?.getItem("user")) ||
-    data
-  ) {
-    const user = data ?? getUser();
-    return user?.loginVerifiedToken?.[0]?.token;
+export const getAccessToken = () => {
+  if (typeof window === "object") {
+    return window.localStorage.getItem(ACCESS_TOKEN_KEY) || undefined;
   }
   return undefined;
 };
 
-/**
- * Retrive isLoginVerified Status
- * @returns bool
- */
-export const isLoginVerified = (data) => {
-  if (
-    (typeof window === "object" && window?.localStorage?.getItem("user")) ||
-    data
-  ) {
-    const user = data ?? getUser();
-    return user?.loginVerifiedToken?.[0]?.isLoginVerified;
+export const setAccessToken = (token) => {
+  if (typeof window === "object" && token) {
+    window.localStorage.setItem(ACCESS_TOKEN_KEY, token);
   }
-  return false;
 };
 
-/**
- * Retrive access token expiry date from local storage
- * @returns date | undefined
- */
+export const isLoginVerified = (data) => {
+  const user = data ?? getUser();
+  return Boolean(user?.id && user?.email);
+};
+
 export const getAccessTokenExpiry = () => {
   if (typeof window === "object") {
-    const accessTokenExpiry = JSON.parse(
-      window.localStorage.getItem("accessTokenExpiry"),
-    );
-    return accessTokenExpiry;
+    const raw = window.localStorage.getItem("accessTokenExpiry");
+    return raw ? JSON.parse(raw) : null;
   }
   return null;
 };
 
-/**
- * Delete token for old users
- * @returns false | true
- */
 export const checkForOldToken = async () => {
-  if (typeof window === "object" && window?.localStorage?.getItem("user")) {
-    if (getUser()?.loginVerifiedToken?.[0].token) {
-      // Remove user data locally to avoid circular dependency
-      localStorage.removeItem("user");
-      localStorage.removeItem("rag_access_token");
-      return true;
-    }
-    return false;
+  if (typeof window === "object" && window.localStorage.getItem("user")) {
+    localStorage.removeItem("user");
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
+    return true;
   }
   return false;
 };
 
-/**
- * Retrieve access token from local storage and check if it has expired
- * @returns string | null
- */
 export const checkExpiryDateOfToken = () => {
-  if (typeof window === "object" && window?.localStorage?.getItem("user")) {
-    if (getUser()?.loginVerifiedToken?.[0].token) {
-      if (isJwtExpired(getUser()?.loginVerifiedToken?.[0].token) === false) {
-        return true;
-      }
-      return false;
-    }
-    return null;
+  const token = getAccessToken();
+  if (!token) return null;
+  try {
+    return isJwtExpired(token) === false;
+  } catch {
+    return false;
   }
-  return null;
 };
